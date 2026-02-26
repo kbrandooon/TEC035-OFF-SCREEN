@@ -1,0 +1,15 @@
+# Running pre-commit validations...
+
+echo "1. Checking formatting (Prettier)..."
+bun run format:check || exit 1
+
+echo "2. Linting (ESLint)..."
+bun run lint || exit 1
+
+echo "3. Checking for unused files/dependencies (Knip)..."
+bun run knip || exit 1
+
+echo "4. Building project..."
+bun run build || exit 1
+
+echo "All checks passed!"

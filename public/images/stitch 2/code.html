@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AV Studio Admin Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2d3748", // Charcoal gray for primary
+                        "primary-hover": "#1a202c",
+                        "accent": "#718096",
+                        "background-light": "#f8f9fa",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface-light text-slate-800 font-display min-h-screen flex items-center justify-center overflow-hidden">
+<div class="w-full h-screen flex">
+<div class="hidden lg:block w-1/2 h-full relative bg-slate-900">
+<div class="absolute inset-0 bg-cover bg-center grayscale contrast-125 opacity-80" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPr__k8LAh6xe1JqrAvKQxye9kjZuMk0Qu6KYOQEcdNwihtO-6x2DZ1HK_UDNHNkdm9aMOLcci_ljM4pva9jURYgS-9rCVFsJ3ZqtHaman68NvO0TpBZC3LJILSRV1jjwRrVXv-av1CKGkAWT0zhPjux6gf6D7c0p7I5QyLa2lzF7kn4wO5sXeJD738SkV2IBOH-L0G48ueLZH2Pglec97-wk9cxGOOrSLETfptUmVYN4E0R00-kgevK0FrhWJqmrkI2p_sqxNIiA'); mix-blend-mode: overlay;">
+</div>
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAIHTPoWyw71dK2DGaAAT-fXayBdauuVuO6c91NxL089xC70dNOQ5Cs1LJzL91dcaPVDYU7CKulY6A2_stlCCKnuoC9c35eeLkBRGAObb0fDvHKZoKlhBOrRlocYm_dlHX4HZ0FDLOb4vujUSW3SfxL4k5fS57LGCB6b-pgjfc-ERylffw2VQ0Xa0RgSkAvbb_jMfVEtNva6cP2QxAUdIUejMXH176pnLXgTGQwSi7U6KV9SsIjKpO_sNsISm2sa2X7jnhDoog5dC0'); filter: grayscale(100%) contrast(110%);">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-12 left-12 text-white z-10 max-w-md">
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-white/10 backdrop-blur-md p-2 rounded-lg border border-white/20">
+<span class="material-symbols-outlined text-3xl">equalizer</span>
+</div>
+</div>
+<h2 class="text-4xl font-bold tracking-tight mb-4 leading-tight">Professional Audio Visual Management</h2>
+<p class="text-slate-300 text-lg font-light leading-relaxed">Streamline your studio bookings, inventory, and client relations with precision and elegance.</p>
+</div>
+</div>
+<div class="w-full lg:w-1/2 h-full bg-white flex flex-col justify-center items-center p-8 lg:p-16 xl:p-24 relative">
+<div class="w-full max-w-md mx-auto space-y-10">
+<div class="text-center space-y-2">
+<div class="mx-auto bg-slate-900 text-white rounded-full size-12 flex items-center justify-center mb-6 shadow-lg">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+</div>
+<h1 class="text-3xl font-bold text-slate-900 tracking-tight">Welcome Back</h1>
+<p class="text-slate-500 text-sm font-medium">Please enter your credentials to access the admin panel.</p>
+</div>
+<form action="#" class="space-y-6" method="POST">
+<div class="space-y-5">
+<div class="space-y-1.5">
+<label class="block text-sm font-semibold text-slate-700" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">mail</span>
+<input autocomplete="email" class="block w-full rounded-lg border-slate-200 bg-slate-50 pl-10 pr-4 py-3 text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:bg-white focus:ring-slate-500 sm:text-sm transition-all shadow-sm" id="email" name="email" placeholder="admin@avstudio.com" required="" type="email"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block text-sm font-semibold text-slate-700" for="password">Password</label>
+<a class="text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
+<input autocomplete="current-password" class="block w-full rounded-lg border-slate-200 bg-slate-50 pl-10 pr-4 py-3 text-slate-900 placeholder-slate-400 focus:border-slate-500 focus:bg-white focus:ring-slate-500 sm:text-sm transition-all shadow-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+</div>
+<div class="flex items-center">
+<input class="h-4 w-4 rounded border-slate-300 text-slate-800 focus:ring-slate-500" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-2 block text-sm text-slate-600" for="remember-me">Remember me for 30 days</label>
+</div>
+<button class="group relative flex w-full justify-center rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white shadow-md hover:bg-primary-hover hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-all active:scale-[0.99]" type="button">
+                    Sign In
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-white transition-colors text-[20px]">arrow_forward</span>
+</button>
+</form>
+<div class="relative">
+<div aria-hidden="true" class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-slate-200"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="bg-white px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Or continue with</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-1 transition-all" type="button">
+<svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24">
+<path d="M12.0003 20.45C16.667 20.45 20.5836 17.2833 20.5836 12.0003V11.5836H12.0003V14.8003H16.8503C16.6336 15.9003 15.3503 17.6336 12.0003 17.6336C9.21696 17.6336 6.96696 15.367 6.96696 12.5836C6.96696 9.80033 9.21696 7.53366 12.0003 7.53366C13.5836 7.53366 14.6336 8.21699 15.2336 8.80033L17.4836 6.55033C16.0336 5.20033 14.167 4.36699 12.0003 4.36699C7.78363 4.36699 4.36696 7.78366 4.36696 12.0003C4.36696 16.217 7.78363 19.6337 12.0003 19.6337" fill="#1F2937" fill-rule="evenodd"></path>
+</svg>
+<span class="hidden sm:inline">Google</span>
+</button>
+<button class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-1 transition-all" type="button">
+<svg aria-hidden="true" class="h-5 w-5 text-slate-900" fill="currentColor" viewBox="0 0 24 24">
+<path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"></path>
+</svg>
+<span class="hidden sm:inline">GitHub</span>
+</button>
+</div>
+<p class="text-center text-xs text-slate-400 mt-8">
+                © 2023 AV Studio Inc. All rights reserved. <br/>
+<a class="hover:text-slate-600 underline decoration-slate-300" href="#">Privacy Policy</a> • <a class="hover:text-slate-600 underline decoration-slate-300" href="#">Terms of Service</a>
+</p>
+</div>
+</div>
+</div>
+
+</body></html>

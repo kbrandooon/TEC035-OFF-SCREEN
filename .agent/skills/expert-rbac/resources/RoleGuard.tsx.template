@@ -1,0 +1,31 @@
+import React from 'react';
+import { useAuth } from '@/features/Auth/hooks/useAuth';
+
+/**
+ * A component that restricts access to its children based on the user's role.
+ * 
+ * @param children - The content to render if the user has a permitted role.
+ * @param allowedRoles - An array of role names that are allowed to see the content.
+ * @param fallback - Optional element to render if the user does not have permission.
+ * 
+ * @example
+ * <RoleGuard allowedRoles={['admin', 'manager']}>
+ *   <AdminDashboard />
+ * </RoleGuard>
+ */
+export const RoleGuard: React.FC<{
+  children: React.ReactNode;
+  allowedRoles: string[];
+  fallback?: React.ReactNode;
+}> = ({ children, allowedRoles, fallback = null }) => {
+  const { user } = useAuth();
+  
+  // Assuming user role is stored in app_metadata or a similar property from Supabase Auth
+  const userRole = user?.app_metadata?.role;
+
+  if (!userRole || !allowedRoles.includes(userRole)) {
+    return <>{fallback}</>;
+  }
+
+  return <>{children}</>;
+};

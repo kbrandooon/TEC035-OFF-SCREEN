@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AV Studio Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2d3748", // Dark charcoal/navy for primary actions
+                        "primary-hover": "#1a202c", // Even darker for hover states
+                        "accent": "#718096", // Soft cool gray for secondary accents
+                        "background-light": "#f8f9fa", // Very light gray, almost white
+                        "background-dark": "#111827", // Standard dark mode background
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 font-display min-h-screen flex overflow-hidden">
+<aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-200 dark:border-slate-700 flex flex-col justify-between shrink-0 h-screen overflow-y-auto z-20">
+<div class="flex flex-col gap-6 p-6">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600 grayscale brightness-110 contrast-125" data-alt="Abstract colorful gradient studio logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCodkYiTnVBogBa2vE1h5IPPTJjH9zng86wIl_2q7VqyARSpRJUIhk5BoPWPCve6j_9S6e5ng-g3IhXOFB6iAUcGgxZLborWhBA62yBVPwv8jw9GfLCOMXUaXPrafIh8sOAN37PS0QEyQcCnEy5d2EI_TxSeP605IXtY2wpa406udv6IIZl0_2SDFxX6B65nyr8Z-VxiKOD4tUNtB0W2fc5tMZxemA-aQY5SQ6VVVY3gx7NNqfUvY_JlrbnuEsQO3t21wOI4a1RQHU");'></div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight tracking-tight">AV Studio</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wide">Admin Panel</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white shadow-md dark:text-white font-semibold transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px] fill-current">calendar_month</span>
+<span class="text-sm">Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">videocam</span>
+<span class="text-sm font-medium">Equipment</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">group</span>
+<span class="text-sm font-medium">Clients</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">inventory_2</span>
+<span class="text-sm font-medium">Inventory</span>
+</a>
+</nav>
+</div>
+<div class="p-6 border-t border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-red-700 dark:hover:text-red-400 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[22px] group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">logout</span>
+<span class="text-sm font-medium">Logout</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
+<header class="h-16 bg-surface-light dark:bg-surface-dark border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-8 shrink-0 z-10">
+<h2 class="text-lg font-bold text-slate-800 dark:text-white tracking-tight">Booking Overview</h2>
+<div class="flex items-center gap-6">
+<div class="relative w-64 hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-700 border-none rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-1 focus:ring-primary focus:bg-white dark:focus:bg-slate-600 transition-all shadow-inner" placeholder="Search bookings..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2.5 right-2.5 size-2 bg-red-600 rounded-full border border-white dark:border-slate-800"></span>
+</button>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-slate-900 dark:text-white">Alex Morgan</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Studio Manager</p>
+</div>
+<div class="size-10 rounded-full bg-slate-200 bg-cover bg-center border border-slate-300 dark:border-slate-600 shadow-sm" data-alt="Portrait of studio manager Alex Morgan" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAPr__k8LAh6xe1JqrAvKQxye9kjZuMk0Qu6KYOQEcdNwihtO-6x2DZ1HK_UDNHNkdm9aMOLcci_ljM4pva9jURYgS-9rCVFsJ3ZqtHaman68NvO0TpBZC3LJILSRV1jjwRrVXv-av1CKGkAWT0zhPjux6gf6D7c0p7I5QyLa2lzF7kn4wO5sXeJD738SkV2IBOH-L0G48ueLZH2Pglec97-wk9cxGOOrSLETfptUmVYN4E0R00-kgevK0FrhWJqmrkI2p_sqxNIiA");'></div>
+</div>
+</div>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h3 class="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">Studio Schedule</h3>
+<p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">Manage studio availability and equipment reservations.</p>
+</div>
+<button class="bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2 font-medium active:scale-[0.98] border border-transparent">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    New Booking
+                </button>
+</div>
+<div class="flex flex-col xl:flex-row gap-6">
+<div class="flex-1 bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
+<div class="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
+<div class="flex items-center gap-4">
+<h4 class="text-lg font-bold text-slate-800 dark:text-white">October 2023</h4>
+<div class="flex bg-slate-100 dark:bg-slate-800/50 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700">
+<button class="px-2 py-1 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 rounded-md transition-colors hover:shadow-sm">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="px-2 py-1 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 rounded-md transition-colors hover:shadow-sm">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">Month</button>
+<button class="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-lg shadow-sm">Week</button>
+<button class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">Day</button>
+</div>
+</div>
+<div class="flex-1 min-h-[500px] p-6 bg-slate-50/30 dark:bg-slate-900/10">
+<div class="grid grid-cols-7 gap-4 mb-4">
+<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Sun</div>
+<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Mon</div>
+<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Tue</div>
+<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Wed</div>
+<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Thu</div>
+<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Fri</div>
+<div class="text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Sat</div>
+</div>
+<div class="grid grid-cols-7 grid-rows-5 gap-2 h-full">
+<div class="p-2 min-h-[100px] bg-slate-50/50 dark:bg-slate-800/30 rounded-lg border border-transparent">
+<span class="text-sm font-medium text-slate-300 dark:text-slate-600">29</span>
+</div>
+<div class="p-2 min-h-[100px] bg-slate-50/50 dark:bg-slate-800/30 rounded-lg border border-transparent">
+<span class="text-sm font-medium text-slate-300 dark:text-slate-600">30</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">1</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">2</span>
+<div class="mt-2 text-xs p-1.5 rounded bg-blue-50 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 font-medium truncate border border-blue-200 dark:border-blue-800/50">Podcast Recording</div>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">3</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">4</span>
+<div class="mt-2 text-xs p-1.5 rounded bg-purple-50 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200 font-medium truncate border border-purple-200 dark:border-purple-800/50">Photo Shoot: Nike</div>
+<div class="mt-1 text-xs p-1.5 rounded bg-orange-50 text-orange-800 dark:bg-orange-900/40 dark:text-orange-200 font-medium truncate border border-orange-200 dark:border-orange-800/50">Equip Maintenance</div>
+</div>
+<div class="p-2 min-h-[100px] bg-primary/5 dark:bg-primary/20 rounded-lg border border-primary/20 hover:border-primary transition-colors relative group cursor-pointer shadow-sm">
+<span class="flex items-center justify-center size-6 rounded-full bg-primary text-white text-sm font-bold shadow-sm">5</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">6</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">7</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">8</span>
+<div class="mt-2 text-xs p-1.5 rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200 font-medium truncate border border-emerald-200 dark:border-emerald-800/50">Music Video: Band X</div>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">9</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">10</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">11</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">12</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">13</span>
+<div class="mt-2 text-xs p-1.5 rounded bg-blue-50 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 font-medium truncate border border-blue-200 dark:border-blue-800/50">Voiceover Session</div>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">14</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">15</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">16</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">17</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">18</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">19</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">20</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">21</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">22</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">23</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">24</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">25</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">26</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">27</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">28</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">29</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">30</span>
+</div>
+<div class="p-2 min-h-[100px] bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors relative group cursor-pointer shadow-sm">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary dark:group-hover:text-white">31</span>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full xl:w-96 flex flex-col gap-6">
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 flex flex-col h-full">
+<h4 class="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">event_upcoming</span>
+                            Upcoming Bookings
+                        </h4>
+<div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
+<div class="flex gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-all group">
+<div class="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm shrink-0">
+<span class="text-xs font-bold text-slate-400 uppercase">Oct</span>
+<span class="text-xl font-bold text-slate-800 dark:text-white">05</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h5 class="text-sm font-bold text-slate-800 dark:text-white truncate">Podcast Recording</h5>
+<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800/30">Confirmed</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">10:00 AM - 12:00 PM</p>
+<div class="flex items-center gap-2 mt-2">
+<div class="size-5 rounded-full bg-cover bg-center ring-1 ring-slate-100 dark:ring-slate-700" data-alt="Client avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA9-rSbEXYSGbfs4uityxd8VOOF1kMttw4TACXn5v9rvCequHQOZZMf4xzQjIs6kCiGMJvgXBtyhK988qjVq9-2nVuD2FsW3aUV4htNt6k-AoOD8KXGC5d8ipldKRn2GB0jPAXMGaScvRIQMhslMu8qvJPCbWB7AjT-jD94AAsZy8SmsFAK0wcTw_jLq0Z_xwFW0focGo7u3yBDmNWIgbPbbwXA1Nt3EewZXv01K_w-JVvxhH4-ZI01QwfIZSRA15NuHDqomhq_1Gk");'></div>
+<span class="text-xs text-slate-600 dark:text-slate-300 truncate font-medium">Client: John Doe</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-all group">
+<div class="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm shrink-0">
+<span class="text-xs font-bold text-slate-400 uppercase">Oct</span>
+<span class="text-xl font-bold text-slate-800 dark:text-white">08</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h5 class="text-sm font-bold text-slate-800 dark:text-white truncate">Music Video: Band X</h5>
+<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/30">Pending</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">02:00 PM - 06:00 PM</p>
+<div class="flex items-center gap-2 mt-2">
+<div class="size-5 rounded-full bg-cover bg-center ring-1 ring-slate-100 dark:ring-slate-700" data-alt="Client avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQtpnVpAtmDQsJ_-coMTwHMkLEcCehIrCHEn4QofcCiYSIVVIUbISr4x7-06Kk1c52YcjLrJ2tfOmgLulSN8oF3WR1Y3aBJW8NhRBQ78Qvs9EatUE9uutoDsIhXi7zFKJZnysM-U4DNt2cEDcc3NsBGyoy4kwVG9fntLzjsTZxOY6j4bInnV746HjOa2LXq8JF44FA6aeKWZ5LurRBWqxBibM1DJEDqjld2Ae1r_kGwEknrglSlV-oZTup92MsNrY8tmXDGQrroDA");'></div>
+<span class="text-xs text-slate-600 dark:text-slate-300 truncate font-medium">Client: Sarah Smith</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-all group">
+<div class="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm shrink-0">
+<span class="text-xs font-bold text-slate-400 uppercase">Oct</span>
+<span class="text-xl font-bold text-slate-800 dark:text-white">12</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h5 class="text-sm font-bold text-slate-800 dark:text-white truncate">Product Shoot</h5>
+<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800/30">Confirmed</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">09:00 AM - 05:00 PM</p>
+<div class="flex items-center gap-2 mt-2">
+<div class="size-5 rounded-full bg-cover bg-center ring-1 ring-slate-100 dark:ring-slate-700" data-alt="Client avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDZ88jXOsmAn6YlbkrfLI4o-5weh4Xvn6Apj-3fMQiUQ0eMz0a5409XGx8iPKJJvFnXNCvF0Imxv9EBX_qe5KQBPDwKGDRqmHgKLbdsligdNnotey73eiOroJlv4wKrH_AVf2z2hZcv2E5T-RoELnDW5kohOK2TGeWMb9jcJ6uM41RenTshpN-JvREffFAll5zsXE6Ep18Sp7wJxIKoFne4b3GL7aFbwHMpPGbBss_Gh4lcsE1J3QhB00M3epA6EjK8A3_FRd9YHH8");'></div>
+<span class="text-xs text-slate-600 dark:text-slate-300 truncate font-medium">Client: Tech Corp</span>
+</div>
+</div>
+</div>
+</div>
+<button class="mt-4 w-full py-2.5 text-sm text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600">
+                            View All Bookings
+                        </button>
+</div>
+<div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-lg p-6 text-white relative overflow-hidden ring-1 ring-slate-900/5">
+<div class="absolute -right-4 -top-4 opacity-5 mix-blend-overlay">
+<span class="material-symbols-outlined text-[120px]">videocam</span>
+</div>
+<h4 class="text-lg font-bold mb-1 relative z-10 tracking-tight">Equipment Status</h4>
+<p class="text-slate-400 text-xs mb-5 relative z-10 font-medium">Real-time availability overview</p>
+<div class="space-y-4 relative z-10">
+<div>
+<div class="flex items-center justify-between text-sm mb-1.5">
+<span class="text-slate-300 font-medium">Cameras</span>
+<span class="font-bold text-emerald-400 text-xs">8/10 Available</span>
+</div>
+<div class="w-full bg-slate-700/50 rounded-full h-1.5 backdrop-blur-sm">
+<div class="bg-emerald-500 h-1.5 rounded-full shadow-sm" style="width: 80%"></div>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between text-sm mb-1.5">
+<span class="text-slate-300 font-medium">Lighting</span>
+<span class="font-bold text-amber-400 text-xs">4/12 Available</span>
+</div>
+<div class="w-full bg-slate-700/50 rounded-full h-1.5 backdrop-blur-sm">
+<div class="bg-amber-500 h-1.5 rounded-full shadow-sm" style="width: 33%"></div>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between text-sm mb-1.5">
+<span class="text-slate-300 font-medium">Audio Mics</span>
+<span class="font-bold text-emerald-400 text-xs">15/15 Available</span>
+</div>
+<div class="w-full bg-slate-700/50 rounded-full h-1.5 backdrop-blur-sm">
+<div class="bg-emerald-500 h-1.5 rounded-full shadow-sm" style="width: 100%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 20px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #475569;
+    }
+</style>
+
+</body></html>
