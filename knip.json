@@ -1,0 +1,6 @@
+{
+  "ignoreDependencies": ["eslint"],
+  "ignoreBinaries": ["eslint"],
+  "ignore": [".agent/**", "eslint.config.js"],
+  "ignoreExportsUsedInFile": true
+}

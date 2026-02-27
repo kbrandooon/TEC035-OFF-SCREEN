@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Strict Skill-Reading Requirement
 
 To ensure the highest quality of code and adherence to project standards, the agent MUST strictly follow this rule:
