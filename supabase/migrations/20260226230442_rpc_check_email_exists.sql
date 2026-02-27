@@ -4,6 +4,9 @@ RETURNS BOOLEAN AS $$
 DECLARE
   v_exists BOOLEAN;
 BEGIN
+  -- Introduce a random delay (0.2s - 0.7s) to thwart rapid enumeration and timing attacks
+  PERFORM pg_sleep(random() * 0.5 + 0.2);
+
   -- Search in auth.users directly (SECURITY DEFINER allows this bypass)
   SELECT EXISTS (
     SELECT 1 FROM auth.users WHERE email = p_email

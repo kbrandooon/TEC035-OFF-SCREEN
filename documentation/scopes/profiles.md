@@ -1,18 +1,43 @@
 # Profiles Feature Documentation
 
-## Overview
-This feature manages the user profile data in the **OFF SCREEN** platform. It operates securely under the new Multi-Tenant database schema, ensuring all user data is strongly isolated via PostgreSQL Row-Level Security (RLS).
+## Scope 1: Technical Documentation (Internal/Developer)
 
-## Core Logic
-The structure follows the architecture implemented in `TEC015-Plato-y-Aparte` but adapted for multi-tenancy.
-- **`types/`**: Contains the interface definitions mirroring the Supabase `profiles` table which includes the crucial `tenant_id` field.
-- **`api/profiles-api.ts`**: Encapsulates all interactions with the `profiles` table, strictly querying the current authenticated user's profile.
-- **`hooks/use-profile.ts`**: Provides an efficient React hook to fetch and keep track of the current user's profile information by binding with the global `useAuth()` session.
+### 1. Overview
+The Profiles feature manages the user profile data in the OFF SCREEN platform. It operates securely under a Multi-Tenant database schema, ensuring all user data is strongly isolated via PostgreSQL Row-Level Security (RLS).
 
-## Data Fetching
-No wildcard selects `select(*)` are encouraged for large operations, though for the single `getCurrentProfile` call, it uses `select('*')` for simplicity since profiles are tightly constrained by RLS. Future multi-record fetches must specify columns explicitly.
+### 2. Architecture/Logic
+The structure follows a clean architecture model adapted for multi-tenancy. React Query is typically used in conjunction with a custom hook (`useProfile`) to fetch the authenticated user's profile from the Supabase `profiles` table. The profile contains a crucial `tenant_id` field that binds the user to their specific studio tenant.
 
-## RLS & Multi-Tenancy Strategy
-Profiles are restricted by:
-- RLS Policy: `Tenant isolation for profiles - SELECT` which matches the profile's `tenant_id` with the decoded `auth.jwt() ->> 'tenant_id'`.
-- This ensures any request made by a logged-in user to grab profiles will inherently exclude other Studio profiles.
+### 3. API/Function Reference
+- `getCurrentProfile()`: API function that fetches the current user's profile based on their authenticated session. Uses `select('*')` for simplicity since profiles are tightly constrained by RLS.
+- `useProfile()`: React hook that calls `getCurrentProfile()` and tracks the profile state.
+- `types/index.ts`: Contains the TypeScript interfaces for the profile object, including `tenant_id`.
+
+### 4. Edge Cases & Error Handling
+- Missing Profile: If the user is authenticated but the profile is missing, the system should gracefully degrade or prompt the user/admin, though typically profiles are created via trigger on signup.
+- RLS Violations: If a user attempts to fetch profiles outside their tenant, Supabase RLS will simply return no rows, preventing data leakage.
+
+### 5. Complexity
+Time Complexity: $O(1)$ fetch for a single user by their primary key (UUID).
+
+---
+
+## Scope 2: User Documentation (External/End-User)
+
+### 1. Introduction
+Your profile contains your basic identifying information and links you to your specific studio environment within the system.
+
+### 2. Prerequisites
+You must be logged into your account to view or interact with your profile data.
+
+### 3. Step-by-Step Guide
+**To view your profile:**
+1. Log in to the OFF SCREEN admin panel.
+2. The system automatically loads your profile in the background to customize your experience and ensure you only see data related to your studio.
+
+### 4. FAQs/Troubleshooting
+- **Can I see other users' profiles?** No, the system uses strict security rules to ensure you can only access profiles within your own organization.
+- **My information is incorrect:** Please contact a system administrator to update your profile details if they are inaccurate.
+
+### 5. Visual Aids
+Profile information may be displayed in the application header or in a dedicated "My Profile" settings page (if implemented).

@@ -26,6 +26,15 @@ BEGIN
     RAISE EXCEPTION 'User already belongs to a tenant';
   END IF;
 
+  -- 2.5 Ensure data is valid to prevent empty inserts
+  IF length(trim(p_tenant_name)) < 2 THEN
+    RAISE EXCEPTION 'Tenant name must be at least 2 characters';
+  END IF;
+  
+  IF length(trim(p_first_name)) < 1 OR length(trim(p_last_name)) < 1 THEN
+    RAISE EXCEPTION 'First and last names are required';
+  END IF;
+
   -- 3. Generate a reasonably unique slug
   -- Replaces non-alphanumeric characters with hyphens, lowercases, and appends a tiny random string
   v_slug := lower(regexp_replace(p_tenant_name, '[^a-zA-Z0-9]+', '-', 'g')) || '-' || floor(random() * 10000)::text;
