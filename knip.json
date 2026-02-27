@@ -1,6 +1,9 @@
 {
-  "ignoreDependencies": ["eslint"],
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": [
+    "supabase/**",
+    "eslint.config.js"
+  ],
   "ignoreBinaries": ["eslint"],
-  "ignore": [".agent/**", "eslint.config.js"],
   "ignoreExportsUsedInFile": true
 }

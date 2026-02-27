@@ -1,6 +1,6 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { Toaster } from 'sonner'
-import { AuthProvider } from '@/features/auth/context/auth-provider'
+import { AuthProvider } from '@/features/auth'
 
 export const Route = createRootRoute({
   component: RootComponent,

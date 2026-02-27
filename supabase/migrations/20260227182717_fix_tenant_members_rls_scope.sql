@@ -1,0 +1,21 @@
+-- =============================================================================
+-- Fix: scope tenant_members RLS so users only see the ACTIVE tenant's members
+-- from the client, while get_my_tenants still works via SECURITY DEFINER.
+-- =============================================================================
+--
+-- PROBLEM:
+--   The "tenant_members_select_own" policy added for multi-tenant dropdown
+--   allows users to see ALL their own tenant_member rows across all tenants.
+--   The "profiles_select_tenant_peers" policy does a subquery on tenant_members.
+--   With both policies OR'd, that subquery returns cross-tenant user_ids,
+--   causing get_tenant_employees to surface users from other tenants.
+--
+-- FIX:
+--   Drop the broad "own membership" policy.
+--   get_my_tenants() already uses SECURITY DEFINER — it bypasses RLS and
+--   correctly joins tenant_members without needing a permissive client policy.
+--   The tenants table still has the multi-membership policy for direct queries.
+-- =============================================================================
+
+-- Remove the overly-broad policy that caused cross-tenant profile leakage
+DROP POLICY IF EXISTS "tenant_members_select_own" ON public.tenant_members;

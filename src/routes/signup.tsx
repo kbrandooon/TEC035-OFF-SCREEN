@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { SignupPage } from '@/features/auth/components/signup-page'
-import { useAuth } from '@/features/auth/hooks/use-auth'
+import { SignupPage, useAuth } from '@/features/auth'
 
 export const Route = createFileRoute('/signup')({
   component: PublicOnlyRoute,

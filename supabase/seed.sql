@@ -62,9 +62,22 @@ VALUES (
     'admin@offscreen.com'
 ) ON CONFLICT (id) DO NOTHING;
 
--- 5. Assign the Admin Role
-INSERT INTO public.user_roles (user_id, role_id)
-SELECT '22222222-2222-2222-2222-222222222222', id 
-FROM public.roles 
+-- 5. Assign Admin Role via tenant_members
+INSERT INTO public.tenant_members (user_id, tenant_id, role_id)
+SELECT
+    '22222222-2222-2222-2222-222222222222',
+    '11111111-1111-1111-1111-111111111111',
+    id
+FROM public.roles
 WHERE name = 'admin'
 ON CONFLICT DO NOTHING;
+
+-- 6. Set JWT claims for the seed user
+UPDATE auth.users
+SET raw_app_meta_data =
+    COALESCE(raw_app_meta_data, '{}'::jsonb)
+    || jsonb_build_object(
+        'tenant_id', '11111111-1111-1111-1111-111111111111',
+        'role', 'admin'
+    )
+WHERE id = '22222222-2222-2222-2222-222222222222';

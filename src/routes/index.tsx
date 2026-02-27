@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { LoginPage } from '@/features/auth/components/login-page'
-import { useAuth } from '@/features/auth/hooks/use-auth'
+import { LoginPage, useAuth } from '@/features/auth'
 
 export const Route = createFileRoute('/')({
   component: PublicOnlyRoute,

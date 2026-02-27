@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { ForgotPasswordPage } from '@/features/auth/components/forgot-password-page'
-import { useAuth } from '@/features/auth/hooks/use-auth'
+import { ForgotPasswordPage, useAuth } from '@/features/auth'
 
 export const Route = createFileRoute('/forgot-password')({
   component: PublicOnlyRoute,

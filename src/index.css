@@ -1,15 +1,41 @@
 @import 'tailwindcss';
 
+/* Use class-based dark mode (like the reference HTML: darkMode: "class") */
+/* dark: utilities only apply when a parent element has the .dark class */
+@variant dark (&:is(.dark *));
+
 @theme {
   --color-primary: #2d3748;
   --color-primary-hover: #1a202c;
   --color-accent: #718096;
   --color-background-light: #f8f9fa;
+  --color-background-dark: #111827;
   --color-surface-light: #ffffff;
+  --color-surface-dark: #1f2937;
   --font-display: 'Manrope', sans-serif;
+  --border-radius: 0.25rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 0.75rem;
 }
 
 body {
   margin: 0;
   font-family: 'Manrope', sans-serif;
+  background-color: var(--color-background-light);
+  color: #1e293b;
+}
+
+/* Custom scrollbar matching the reference */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 20px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
 }

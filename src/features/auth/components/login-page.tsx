@@ -68,11 +68,11 @@ export function LoginPage() {
               </div>
             </div>
             <h2 className='mb-4 text-4xl leading-tight font-bold tracking-tight'>
-              Gestión Profesional Audiovisual
+              Gestión Profesional de Equipo Audiovisual
             </h2>
             <p className='text-lg leading-relaxed font-light text-slate-300'>
-              Optimiza tus reservas de estudio, inventario y relaciones con
-              clientes con precisión y elegancia.
+              Optimiza tus reservas de estudio y equipos con precisión y
+              elegancia.
             </p>
           </div>
         </div>
