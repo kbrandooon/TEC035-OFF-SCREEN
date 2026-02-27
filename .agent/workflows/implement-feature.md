@@ -48,6 +48,8 @@ description: Comprehensive workflow for implementing new features, covering data
    - Avoid import or select \*.
    - API's files has to be one function by file.
    - Ensure follow screaming architecture.
+   - Avoid using inners in API's instead make views.
+
 
 6. **Phase 6: Code Quality**
    - Run bun run lint

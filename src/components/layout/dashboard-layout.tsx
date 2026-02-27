@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { supabase } from '@/supabase/client'
 import { signOut, useAuth, useIsAdmin, useRoleLabel } from '@/features/auth'
 import { TenantSwitcher } from '@/features/tenants'
@@ -19,9 +19,22 @@ interface DashboardLayoutProps {
  */
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, session } = useAuth()
   const isAdmin = useIsAdmin()
   const roleLabel = useRoleLabel()
+
+  /** Returns Tailwind classes for a nav link depending on whether it is the active route. */
+  const navLinkClass = (path: string) =>
+    location.pathname === path
+      ? 'bg-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold text-white shadow-md transition-colors dark:text-white'
+      : 'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
+
+  /** Returns Tailwind classes for the icon inside a nav link. */
+  const navIconClass = (path: string) =>
+    location.pathname === path
+      ? 'material-symbols-outlined fill-current text-[22px] font-normal'
+      : 'material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'
 
   const [tenantName, setTenantName] = useState<string>('Cargando...')
   const [fullName, setFullName] = useState<string>('Admin')
@@ -127,49 +140,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Navigation */}
           <nav className='flex flex-col gap-1'>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='/dashboard'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                dashboard
-              </span>
+            <a className={navLinkClass('/dashboard')} href='/dashboard'>
+              <span className={navIconClass('/dashboard')}>dashboard</span>
               <span className='text-sm font-medium'>Panel General</span>
             </a>
-            <a
-              className='bg-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold text-white shadow-md transition-colors dark:text-white'
-              href='#'
-            >
-              <span className='material-symbols-outlined fill-current text-[22px] font-normal'>
-                calendar_month
-              </span>
-              <span className='text-sm'>Reservas</span>
+            <a className={navLinkClass('/dashboard')} href='/dashboard'>
+              <span className={navIconClass('/dashboard')}>calendar_month</span>
+              <span className='text-sm font-medium'>Reservas</span>
             </a>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='#'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                videocam
-              </span>
+            <a className={navLinkClass('/equipo')} href='/equipo'>
+              <span className={navIconClass('/equipo')}>videocam</span>
               <span className='text-sm font-medium'>Equipo</span>
             </a>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='#'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                group
-              </span>
+            <a className={navLinkClass('/clientes')} href='/clientes'>
+              <span className={navIconClass('/clientes')}>group</span>
               <span className='text-sm font-medium'>Clientes</span>
             </a>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='#'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                inventory_2
-              </span>
+            <a className={navLinkClass('/inventario')} href='/inventario'>
+              <span className={navIconClass('/inventario')}>inventory_2</span>
               <span className='text-sm font-medium'>Inventario</span>
             </a>
           </nav>
