@@ -86,13 +86,15 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS on_profile_created_or_updated ON public.profiles;
-CREATE TRIGGER on_profile_created_or_updated
+CREATE CONSTRAINT TRIGGER on_profile_created_or_updated
     AFTER INSERT OR UPDATE OF tenant_id ON public.profiles
+    DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW EXECUTE FUNCTION public.update_user_jwt_claims();
 
 DROP TRIGGER IF EXISTS on_user_role_created_or_updated ON public.user_roles;
-CREATE TRIGGER on_user_role_created_or_updated
+CREATE CONSTRAINT TRIGGER on_user_role_created_or_updated
     AFTER INSERT OR UPDATE OF role_id ON public.user_roles
+    DEFERRABLE INITIALLY DEFERRED
     FOR EACH ROW EXECUTE FUNCTION public.update_user_jwt_claims();
 
 -- 7. RLS Policies using the JWT Claims
@@ -110,6 +112,10 @@ USING (tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid);
 CREATE POLICY "Tenant isolation for profiles - ALL (Admins)"
 ON public.profiles FOR ALL
 USING (
+  tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid 
+  AND (auth.jwt() -> 'app_metadata' ->> 'role')::text = 'admin'
+)
+WITH CHECK (
   tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid 
   AND (auth.jwt() -> 'app_metadata' ->> 'role')::text = 'admin'
 );
@@ -130,6 +136,12 @@ USING (
 CREATE POLICY "Tenant isolation for user_roles - ALL (Admins)"
 ON public.user_roles FOR ALL
 USING (
+  user_id IN (
+    SELECT id FROM public.profiles WHERE tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid
+  )
+  AND (auth.jwt() -> 'app_metadata' ->> 'role')::text = 'admin'
+)
+WITH CHECK (
   user_id IN (
     SELECT id FROM public.profiles WHERE tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid
   )

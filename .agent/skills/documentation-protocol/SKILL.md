@@ -1,74 +1,31 @@
----
-name: documentation-protocol
-description: Specialized protocol for generating Technical, Functional, and User documentation for the "Off-Screen" ERP. Use this when documenting new features, refactored modules, or entire system layers.
----
+# Role: Senior Technical Writer & Documentation Engineer
 
-# Documentation Protocol
+## Objective
+For every scope, feature, or code block provided, generate two distinct types of documentation in **Markdown (.md)** format. All output must be in **English**.
 
-This skill guides the creation of a comprehensive three-layered documentation suite for the "Off-Screen" ERP system.
+## Scope 1: Technical Documentation (Internal/Developer)
+Target Audience: Developers, System Architects.
+Structure:
+1.  **Overview**: High-level technical purpose of the scope.
+2.  **Architecture/Logic**: Description of the underlying logic, algorithms, or data flow. 
+3.  **API/Function Reference**: 
+    * Signatures, parameters (with types), and return values.
+    * Dependencies or required environment variables.
+4.  **Edge Cases & Error Handling**: How the system handles failures.
+5.  **Complexity**: Mention Time/Space complexity if relevant (using LaTeX e.g., $O(n \log n)$).
 
-## Documentation Layers
+## Scope 2: User Documentation (External/End-User)
+Target Audience: Non-technical users or API consumers.
+Structure:
+1.  **Introduction**: What does this feature do for the user?
+2.  **Prerequisites**: What do they need before starting?
+3.  **Step-by-Step Guide**: Clear, numbered instructions on how to use the feature.
+4.  **FAQs/Troubleshooting**: Common issues and simple fixes.
+5.  **Visual Aids**: Descriptions of UI elements if applicable.
 
-### 1. Technical Documentation (Architectural)
-
-Focuses on "How it's built".
-
-- **System Architecture**: Screaming Architecture, folder structure, and data flow.
-- **Database Schema**: Supabase tables, relationships, and RLS policies.
-- **API & Logic**: TanStack hooks, inventory availability logic, and state management.
-
-### 2. Functional Documentation (By Scope)
-
-Focuses on "What it does".
-
-- **Inventory Module**: Stock management, categories, tracking.
-- **Reservation Module**: Rental process, date-based availability, booking.
-- **Financial Module**: Transaction logging, account types.
-
-### 3. User Documentation (End-User Manual)
-
-Focuses on "How to use it".
-
-- **Warehouse Staff**: Step-by-step guides for inventory entry.
-- **Sales Staff**: Step-by-step guides for creating reservations.
-
-## Formatting Rules
-
-- **Format**: All files must be in Markdown (`.md`).
-- **Naming**: Use `kebab-case` for file names (e.g., `technical-architecture.md`).
-- **Tone**: Professional, clear, and instructional.
-- **Visuals**: Use Mermaid.js syntax for diagrams (ERDs, Flowcharts, Sequence Diagrams).
-- **Structure**: Use a clear hierarchy with H1 for titles and H2/H3 for sections.
-
-## Step-by-Step Guide
-
-### 1. Analysis
-
-- Identify the module or scope to document.
-- Review the code, database schema, and existing refactoring justifications.
-
-### 2. Layering
-
-- Determine which of the three layers (Technical, Functional, User) are required for the current task.
-- Group documentation into logical files following the naming convention.
-
-### 3. Drafting
-
-- **Technical**: Explain the _why_ and _how_ of the implementation. Use code snippets and Mermaid diagrams.
-- **Functional**: Describe the business logic and system behaviors.
-- **User**: Write simplified, task-oriented guides with clear steps.
-
-### 4. Verification
-
-- Cross-reference documentation with the actual code to ensure accuracy.
-- Check Mermaid.js syntax for rendering errors.
-- Ensure all filenames are in `kebab-case`.
-
-## Document Checklist
-
-- [ ] File names use `kebab-case`.
-- [ ] Technical layer includes Architecture, DB, and API sections.
-- [ ] Functional layer covers business intent and module scope.
-- [ ] User layer is written for the target persona (Warehouse/Sales).
-- [ ] At least one Mermaid.js diagram is used where complex logic/schema exists.
-- [ ] Tone is professional and instructional.
+## Formatting Guidelines
+- Use **Heading Levels** (##, ###) for clear hierarchy.
+- Use **Code Blocks** for snippets, terminal commands, or JSON examples.
+- Use **Tables** for parameter definitions or comparison data.
+- Maintain a professional, concise, and helpful tone (the "Gemini style").
+- Strictly avoid jargon in User Docs; use precise terminology in Technical Docs.

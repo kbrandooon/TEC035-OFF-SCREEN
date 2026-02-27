@@ -4,6 +4,14 @@ import { signIn } from '../api/sign-in'
 import { signInWithGoogle } from '../api/sign-in-with-google'
 import { translateAuthError } from '../utils/error-parser'
 
+/**
+ * Hook for managing the authentication login state and logic.
+ *
+ * Provides methods for standard email/password sign-in and Google SSO login,
+ * managing the loading state and returning any translated error messages.
+ *
+ * @returns {object} The login form state, loading/error state, and submission handlers.
+ */
 export function useLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

@@ -63,7 +63,7 @@ export function LoginPage() {
             <div className='mb-6 flex items-center gap-3'>
               <div className='rounded-lg border border-white/20 bg-white/10 p-2 backdrop-blur-md'>
                 <span className='material-symbols-outlined text-3xl'>
-                  equalizer
+                  videocam
                 </span>
               </div>
             </div>
@@ -83,7 +83,7 @@ export function LoginPage() {
             <div className='space-y-2 text-center'>
               <div className='mx-auto mb-6 flex size-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg'>
                 <span className='material-symbols-outlined text-2xl'>
-                  grid_view
+                  person
                 </span>
               </div>
               <h1 className='text-3xl font-bold tracking-tight text-slate-900'>
