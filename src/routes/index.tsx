@@ -1,7 +1,8 @@
+import { useEffect, useRef } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
-import { useAuth } from '@/features/auth/hooks/use-auth'
+import { toast } from 'sonner'
 import { LoginPage } from '@/features/auth/components/login-page'
+import { useAuth } from '@/features/auth/hooks/use-auth'
 
 export const Route = createFileRoute('/')({
   component: PublicOnlyRoute,
@@ -10,14 +11,44 @@ export const Route = createFileRoute('/')({
 function PublicOnlyRoute() {
   const { user, isLoading } = useAuth()
   const navigate = useNavigate()
+  const toastIdRef = useRef<string | number | null>(null)
 
   useEffect(() => {
-    if (!isLoading && user) {
-      navigate({ to: '/dashboard', replace: true })
+    const hash = window.location.hash
+    if (
+      hash &&
+      hash.includes('access_token') &&
+      isLoading &&
+      !toastIdRef.current
+    ) {
+      toastIdRef.current = toast.loading('Verificando sesión...')
+    }
+  }, [isLoading])
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (toastIdRef.current) {
+        toast.dismiss(toastIdRef.current)
+        toastIdRef.current = null
+      }
+      if (user) {
+        navigate({ to: '/dashboard', replace: true })
+      }
     }
   }, [user, isLoading, navigate])
 
-  if (isLoading || user) {
+  if (isLoading) {
+    const isOAuthRedirect =
+      typeof window !== 'undefined' &&
+      window.location.hash.includes('access_token')
+
+    if (isOAuthRedirect) {
+      return <LoginPage />
+    }
+    return null
+  }
+
+  if (user) {
     return null
   }
 

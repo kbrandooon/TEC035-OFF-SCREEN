@@ -107,8 +107,7 @@ function DashboardPage() {
   // Helper to safely read JWT claims since Supabase types don't include our custom ones natively
   const jwtClaims = session?.user?.app_metadata || {}
 
-  if (isLoading)
-    return <div className='font-display p-8'>Verificando sesión...</div>
+  if (isLoading) return null
   // Blank background to prevent any flash while the SPA navigation executes instantly
   if (isSigningOut) return <div className='min-h-screen bg-slate-50'></div>
   if (!user)
