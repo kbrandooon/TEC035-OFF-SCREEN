@@ -17,6 +17,8 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as AcceptInviteRouteImport } from './routes/accept-invite'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
+import { Route as EquipoEquipmentIdRouteImport } from './routes/equipo.$equipmentId'
 import { Route as ConfigurationTeamRouteImport } from './routes/configuration/team'
 
 const SignupRoute = SignupRouteImport.update({
@@ -59,6 +61,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EquipoIndexRoute = EquipoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EquipoRoute,
+} as any)
+const EquipoEquipmentIdRoute = EquipoEquipmentIdRouteImport.update({
+  id: '/$equipmentId',
+  path: '/$equipmentId',
+  getParentRoute: () => EquipoRoute,
+} as any)
 const ConfigurationTeamRoute = ConfigurationTeamRouteImport.update({
   id: '/configuration/team',
   path: '/configuration/team',
@@ -70,22 +82,25 @@ export interface FileRoutesByFullPath {
   '/accept-invite': typeof AcceptInviteRoute
   '/clientes': typeof ClientesRoute
   '/dashboard': typeof DashboardRoute
-  '/equipo': typeof EquipoRoute
+  '/equipo': typeof EquipoRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventario': typeof InventarioRoute
   '/signup': typeof SignupRoute
   '/configuration/team': typeof ConfigurationTeamRoute
+  '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
+  '/equipo/': typeof EquipoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accept-invite': typeof AcceptInviteRoute
   '/clientes': typeof ClientesRoute
   '/dashboard': typeof DashboardRoute
-  '/equipo': typeof EquipoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventario': typeof InventarioRoute
   '/signup': typeof SignupRoute
   '/configuration/team': typeof ConfigurationTeamRoute
+  '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
+  '/equipo': typeof EquipoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,11 +108,13 @@ export interface FileRoutesById {
   '/accept-invite': typeof AcceptInviteRoute
   '/clientes': typeof ClientesRoute
   '/dashboard': typeof DashboardRoute
-  '/equipo': typeof EquipoRoute
+  '/equipo': typeof EquipoRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventario': typeof InventarioRoute
   '/signup': typeof SignupRoute
   '/configuration/team': typeof ConfigurationTeamRoute
+  '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
+  '/equipo/': typeof EquipoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,17 +128,20 @@ export interface FileRouteTypes {
     | '/inventario'
     | '/signup'
     | '/configuration/team'
+    | '/equipo/$equipmentId'
+    | '/equipo/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/accept-invite'
     | '/clientes'
     | '/dashboard'
-    | '/equipo'
     | '/forgot-password'
     | '/inventario'
     | '/signup'
     | '/configuration/team'
+    | '/equipo/$equipmentId'
+    | '/equipo'
   id:
     | '__root__'
     | '/'
@@ -133,6 +153,8 @@ export interface FileRouteTypes {
     | '/inventario'
     | '/signup'
     | '/configuration/team'
+    | '/equipo/$equipmentId'
+    | '/equipo/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,7 +162,7 @@ export interface RootRouteChildren {
   AcceptInviteRoute: typeof AcceptInviteRoute
   ClientesRoute: typeof ClientesRoute
   DashboardRoute: typeof DashboardRoute
-  EquipoRoute: typeof EquipoRoute
+  EquipoRoute: typeof EquipoRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InventarioRoute: typeof InventarioRoute
   SignupRoute: typeof SignupRoute
@@ -205,6 +227,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipo/': {
+      id: '/equipo/'
+      path: '/'
+      fullPath: '/equipo/'
+      preLoaderRoute: typeof EquipoIndexRouteImport
+      parentRoute: typeof EquipoRoute
+    }
+    '/equipo/$equipmentId': {
+      id: '/equipo/$equipmentId'
+      path: '/$equipmentId'
+      fullPath: '/equipo/$equipmentId'
+      preLoaderRoute: typeof EquipoEquipmentIdRouteImport
+      parentRoute: typeof EquipoRoute
+    }
     '/configuration/team': {
       id: '/configuration/team'
       path: '/configuration/team'
@@ -215,12 +251,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface EquipoRouteChildren {
+  EquipoEquipmentIdRoute: typeof EquipoEquipmentIdRoute
+  EquipoIndexRoute: typeof EquipoIndexRoute
+}
+
+const EquipoRouteChildren: EquipoRouteChildren = {
+  EquipoEquipmentIdRoute: EquipoEquipmentIdRoute,
+  EquipoIndexRoute: EquipoIndexRoute,
+}
+
+const EquipoRouteWithChildren =
+  EquipoRoute._addFileChildren(EquipoRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcceptInviteRoute: AcceptInviteRoute,
   ClientesRoute: ClientesRoute,
   DashboardRoute: DashboardRoute,
-  EquipoRoute: EquipoRoute,
+  EquipoRoute: EquipoRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InventarioRoute: InventarioRoute,
   SignupRoute: SignupRoute,

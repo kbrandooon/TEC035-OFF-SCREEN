@@ -19,7 +19,9 @@ export async function createInventoryMovement(
       clasification: values.clasification || null,
       description: values.description || null,
     })
-    .select('id, tenant_id, equipment_id, date, movement_type, quantity, clasification, description, created_at, created_by')
+    .select(
+      'id, tenant_id, equipment_id, date, movement_type, quantity, clasification, description, created_at, created_by'
+    )
     .single()
 
   if (error) throw new Error(error.message)

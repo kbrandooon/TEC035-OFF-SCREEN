@@ -16,9 +16,11 @@ export async function createEquipment(
       description: values.description || null,
       type: values.type,
       status: values.status,
-      quantity: values.quantity,
+      image_url: values.image_url || null,
     })
-    .select('id, tenant_id, name, description, type, status, quantity, created_at, created_by, updated_at, updated_by')
+    .select(
+      'id, tenant_id, name, description, type, status, quantity, image_url, created_at, created_by, updated_at, updated_by'
+    )
     .single()
 
   if (error) throw new Error(error.message)

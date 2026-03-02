@@ -1,5 +1,16 @@
-/** Equipment status values as stored in the DB. */
-export type EquipmentStatus = 'available' | 'maintenance' | 'retired'
+/** Equipment type values matching the `equipment_type` Postgres enum. */
+export type EquipmentType =
+  | 'camara'
+  | 'lente'
+  | 'iluminacion'
+  | 'tramoya'
+  | 'audio'
+  | 'video'
+  | 'estudio'
+  | 'otros_accesorios'
+
+/** Equipment status values matching the `equipment_status` Postgres enum. */
+export type EquipmentStatus = 'disponible' | 'mantenimiento' | 'no_disponible'
 
 /** Represents an equipment record from the `equipment` table. */
 export interface Equipment {
@@ -7,9 +18,10 @@ export interface Equipment {
   tenant_id: string
   name: string
   description: string | null
-  type: string
+  type: EquipmentType
   status: EquipmentStatus
   quantity: number
+  image_url: string | null
   created_at: string
   created_by: string | null
   updated_at: string | null
@@ -20,7 +32,7 @@ export interface Equipment {
 export interface EquipmentFormValues {
   name: string
   description: string
-  type: string
+  type: EquipmentType
   status: EquipmentStatus
-  quantity: number
+  image_url: string | null
 }

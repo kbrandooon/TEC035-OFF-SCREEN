@@ -9,7 +9,9 @@ interface ClientListProps {
 
 /** Derives initials from names + last_name. */
 function initials(customer: Customer): string {
-  return ((customer.names[0] ?? '') + (customer.last_name[0] ?? '')).toUpperCase()
+  return (
+    (customer.names[0] ?? '') + (customer.last_name[0] ?? '')
+  ).toUpperCase()
 }
 
 /**
@@ -56,13 +58,17 @@ export function ClientList({ clients, onEdit, onDelete }: ClientListProps) {
               <div className='mt-0.5 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400'>
                 {client.email && (
                   <span className='flex items-center gap-1'>
-                    <span className='material-symbols-outlined text-[14px] font-normal'>mail</span>
+                    <span className='material-symbols-outlined text-[14px] font-normal'>
+                      mail
+                    </span>
                     {client.email}
                   </span>
                 )}
                 {client.phone && (
                   <span className='flex items-center gap-1'>
-                    <span className='material-symbols-outlined text-[14px] font-normal'>phone</span>
+                    <span className='material-symbols-outlined text-[14px] font-normal'>
+                      phone
+                    </span>
                     {client.phone}
                   </span>
                 )}
@@ -89,7 +95,10 @@ export function ClientList({ clients, onEdit, onDelete }: ClientListProps) {
                     Cancelar
                   </button>
                   <button
-                    onClick={() => { setConfirmDeleteId(null); onDelete(client) }}
+                    onClick={() => {
+                      setConfirmDeleteId(null)
+                      onDelete(client)
+                    }}
                     className='rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
                   >
                     Confirmar
@@ -102,14 +111,18 @@ export function ClientList({ clients, onEdit, onDelete }: ClientListProps) {
                     className='rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-white'
                     title='Editar cliente'
                   >
-                    <span className='material-symbols-outlined text-[18px] font-normal'>edit</span>
+                    <span className='material-symbols-outlined text-[18px] font-normal'>
+                      edit
+                    </span>
                   </button>
                   <button
                     onClick={() => setConfirmDeleteId(client.id)}
                     className='rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400'
                     title='Eliminar cliente'
                   >
-                    <span className='material-symbols-outlined text-[18px] font-normal'>delete</span>
+                    <span className='material-symbols-outlined text-[18px] font-normal'>
+                      delete
+                    </span>
                   </button>
                 </>
               )}

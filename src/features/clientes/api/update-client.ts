@@ -21,7 +21,9 @@ export async function updateClient(
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)
-    .select('id, tenant_id, names, last_name, email, phone, created_at, created_by, updated_at, updated_by')
+    .select(
+      'id, tenant_id, names, last_name, email, phone, created_at, created_by, updated_at, updated_by'
+    )
     .single()
 
   if (error) throw new Error(error.message)

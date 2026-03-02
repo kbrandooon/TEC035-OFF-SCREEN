@@ -8,7 +8,9 @@ import type { Customer } from '../types'
 export async function getClients(): Promise<Customer[]> {
   const { data, error } = await supabase
     .from('customers')
-    .select('id, tenant_id, names, last_name, email, phone, created_at, created_by, updated_at, updated_by')
+    .select(
+      'id, tenant_id, names, last_name, email, phone, created_at, created_by, updated_at, updated_by'
+    )
     .order('names')
 
   if (error) throw new Error(error.message)

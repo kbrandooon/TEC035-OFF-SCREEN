@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { Customer, CustomerFormValues } from '../types'
 
 interface ClientFormModalProps {
@@ -13,31 +13,39 @@ interface ClientFormModalProps {
 
 /**
  * Modal dialog for creating or editing a customer.
- * Resets form fields whenever the `client` prop changes (open/close cycle).
+ * Renders an inner keyed component so form state resets automatically
+ * whenever `client` or `isOpen` changes — avoiding `setState` inside effects.
  */
-export function ClientFormModal({
+export function ClientFormModal(props: ClientFormModalProps) {
+  if (!props.isOpen) return null
+  // Key on client.id (or 'new') so inner state resets cleanly on open/switch
+  const key = props.client?.id ?? 'new'
+  return <ClientFormInner key={key} {...props} />
+}
+
+/**
+ * Inner form component. Initializes its own state directly from props on mount.
+ * Separated from ClientFormModal so that changing `key` triggers a fresh mount.
+ *
+ * @param client - Customer to pre-fill (null when creating a new record).
+ * @param isOpen - Controls modal visibility.
+ * @param isSaving - Disables inputs while the parent is persisting.
+ * @param error - Server-side error message to display inside the form.
+ * @param onClose - Callback to dismiss the modal without saving.
+ * @param onSave - Async callback called with the validated form values.
+ */
+function ClientFormInner({
   client,
-  isOpen,
   isSaving,
   error,
   onClose,
   onSave,
 }: ClientFormModalProps) {
-  const [names, setNames] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
+  const [names, setNames] = useState(client?.names ?? '')
+  const [lastName, setLastName] = useState(client?.last_name ?? '')
+  const [email, setEmail] = useState(client?.email ?? '')
+  const [phone, setPhone] = useState(client?.phone ?? '')
   const namesRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    setNames(client?.names ?? '')
-    setLastName(client?.last_name ?? '')
-    setEmail(client?.email ?? '')
-    setPhone(client?.phone ?? '')
-    if (isOpen) setTimeout(() => namesRef.current?.focus(), 50)
-  }, [client, isOpen])
-
-  if (!isOpen) return null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,7 +63,9 @@ export function ClientFormModal({
           onClick={onClose}
           className='absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700'
         >
-          <span className='material-symbols-outlined text-[20px] font-normal'>close</span>
+          <span className='material-symbols-outlined text-[20px] font-normal'>
+            close
+          </span>
         </button>
 
         {/* Header */}
@@ -70,7 +80,9 @@ export function ClientFormModal({
               {client ? 'Editar Cliente' : 'Nuevo Cliente'}
             </h2>
             <p className='text-sm text-slate-500 dark:text-slate-400'>
-              {client ? 'Actualiza los datos del cliente.' : 'Registra un nuevo cliente.'}
+              {client
+                ? 'Actualiza los datos del cliente.'
+                : 'Registra un nuevo cliente.'}
             </p>
           </div>
         </div>
@@ -173,7 +185,11 @@ export function ClientFormModal({
               disabled={isSaving || !names.trim() || !lastName.trim()}
               className='bg-primary hover:bg-primary-hover flex-1 rounded-lg px-4 py-2.5 text-sm font-bold text-white shadow transition-colors disabled:opacity-60'
             >
-              {isSaving ? 'Guardando...' : client ? 'Guardar Cambios' : 'Crear Cliente'}
+              {isSaving
+                ? 'Guardando...'
+                : client
+                  ? 'Guardar Cambios'
+                  : 'Crear Cliente'}
             </button>
           </div>
         </form>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useAuth } from '@/features/auth'
@@ -6,8 +6,9 @@ import {
   ClientFormModal,
   ClientList,
   useClients,
+  type Customer,
+  type CustomerFormValues,
 } from '@/features/clientes'
-import type { Customer, CustomerFormValues } from '@/features/clientes'
 
 export const Route = createFileRoute('/clientes')({
   component: ClientesPage,
@@ -16,6 +17,7 @@ export const Route = createFileRoute('/clientes')({
 /**
  * Clientes management page under /clientes.
  * Lists all tenant customers; allows creating, editing, and deleting records.
+ * Header search bar filters by name (client-side).
  */
 function ClientesPage() {
   const navigate = useNavigate()
@@ -23,10 +25,20 @@ function ClientesPage() {
   const { clients, isLoading, error, onCreate, onUpdate, onDelete } =
     useClients()
 
+  const [search, setSearch] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingClient, setEditingClient] = useState<Customer | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+
+  // Always compute filtered list; moved above early-return to satisfy Rules of Hooks
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase().trim()
+    if (!q) return clients
+    return clients.filter((c) =>
+      `${c.names} ${c.last_name}`.toLowerCase().includes(q)
+    )
+  }, [clients, search])
 
   if (!isAuthLoading && !user) {
     void navigate({ to: '/' })
@@ -68,12 +80,18 @@ function ClientesPage() {
     try {
       await onDelete(client.id)
     } catch {
-      // Errors swallowed here; a toast system would surface them in production
+      // surfaced via toast in production
     }
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      headerSearch={{
+        placeholder: 'Buscar cliente por nombre...',
+        value: search,
+        onChange: setSearch,
+      }}
+    >
       {/* Page header */}
       <div className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
         <div>
@@ -88,20 +106,26 @@ function ClientesPage() {
           onClick={openCreateModal}
           className='bg-primary hover:bg-primary-hover flex items-center gap-2 rounded-lg border border-transparent px-5 py-2.5 font-medium text-white shadow transition-all hover:shadow-md active:scale-[0.98]'
         >
-          <span className='material-symbols-outlined text-[20px] font-normal'>person_add</span>
+          <span className='material-symbols-outlined text-[20px] font-normal'>
+            person_add
+          </span>
           Nuevo Cliente
         </button>
       </div>
 
       {isLoading ? (
         <div className='flex h-64 items-center justify-center'>
-          <span className='material-symbols-outlined animate-spin text-[36px] font-normal text-slate-400'>progress_activity</span>
+          <span className='material-symbols-outlined animate-spin text-[36px] font-normal text-slate-400'>
+            progress_activity
+          </span>
         </div>
       ) : error ? (
-        <div className='rounded-lg border border-red-100 bg-red-50 p-4 text-sm font-medium text-red-600 dark:border-red-900/30 dark:bg-red-900/20 dark:text-red-400'>{error}</div>
+        <div className='rounded-lg border border-red-100 bg-red-50 p-4 text-sm font-medium text-red-600 dark:border-red-900/30 dark:bg-red-900/20 dark:text-red-400'>
+          {error}
+        </div>
       ) : (
         <ClientList
-          clients={clients}
+          clients={filtered}
           onEdit={openEditModal}
           onDelete={(client) => void handleDelete(client)}
         />
@@ -113,7 +137,9 @@ function ClientesPage() {
         isSaving={isSaving}
         error={saveError}
         onClose={() => setIsModalOpen(false)}
-        onSave={async (values) => { await handleSave(values) }}
+        onSave={async (values) => {
+          await handleSave(values)
+        }}
       />
     </DashboardLayout>
   )
