@@ -5,34 +5,37 @@ import type { EquipmentType } from '../types'
 export interface EquipmentTypeStat {
   /** Equipment category. */
   type: EquipmentType
-  /** Units currently available (`status = 'disponible'`). */
+  /**
+   * Units available **today** — total quantity minus units committed in
+   * reservations that overlap the current moment through end of today.
+   * Floored at 0.
+   */
   available: number
-  /** Total units across all statuses. */
+  /** Total units across all active statuses. */
   total: number
 }
 
 /**
- * Returns per-type stock summaries for the current tenant's equipment.
+ * Returns per-type equipment availability for **today**.
  *
- * Queries the `v_equipment_stats` view, which performs a `GROUP BY type`
- * aggregation in Postgres. This replaces the previous client-side reduce loop
- * that fetched all rows and computed available/total counts in JavaScript.
+ * Calls the `get_today_equipment_stats` RPC which subtracts actively committed
+ * units (reservations overlapping [now, end_of_today]) from total stock.
+ * This replaces the previous `v_equipment_stats` view query that only used
+ * the static `status = 'disponible'` flag without considering reservations.
  *
- * @returns Array of per-type stock summaries, sorted by type name.
+ * @returns Array of per-type live availability stats, sorted by type.
  */
 export async function getEquipmentStats(): Promise<EquipmentTypeStat[]> {
-  const { data, error } = await supabase
-    .from('v_equipment_stats')
-    .select('type, total, available')
-    .order('type')
+  const { data, error } = await supabase.rpc('get_today_equipment_stats')
 
   if (error) throw new Error(error.message)
   if (!data || data.length === 0) return []
 
-  return data.map((row) => ({
-    type: row.type as EquipmentType,
-    // Postgres SUM returns numeric; coerce to number for domain type safety
-    total: Number(row.total ?? 0),
-    available: Number(row.available ?? 0),
-  }))
+  return data.map(
+    (row: { type: string; total: number; today_available: number }) => ({
+      type: row.type as EquipmentType,
+      total: Number(row.total ?? 0),
+      available: Number(row.today_available ?? 0),
+    })
+  )
 }

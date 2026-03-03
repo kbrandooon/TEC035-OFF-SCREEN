@@ -277,6 +277,16 @@ export function ReservationFormModal({
                   selectedItems={values.equipmentItems}
                   onChange={(items) => set('equipmentItems', items)}
                   disabled={isSaving}
+                  reservationStart={
+                    values.date && values.startTime
+                      ? `${values.date}T${values.startTime}`
+                      : undefined
+                  }
+                  reservationEnd={
+                    values.endDate && values.endTime
+                      ? `${values.endDate}T${values.endTime}`
+                      : undefined
+                  }
                 />
               )}
             </div>

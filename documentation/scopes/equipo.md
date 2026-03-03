@@ -26,6 +26,16 @@ The **Equipo** feature manages the physical inventory of audiovisual equipment o
 
 Manages a paginated, filtered equipment list. Accepts `page`, `search`, `status`, and `type` params. Re-fetches automatically when any param changes. Exposes `onCreate`, `onUpdate`, `onDelete`, and `refetch`.
 
+### Hook: `useEquipmentStats`
+
+Fetches per-type equipment availability for **today** using TanStack Query. Configured with:
+
+- `staleTime: 0` — always refetches on component mount (e.g., when navigating back to Dashboard).
+- `refetchOnWindowFocus: true` — updates when the browser tab regains focus.
+- `refetchInterval: 60_000` — background refresh every 60 seconds.
+
+The query key `equipment-stats-today` is invalidated automatically by `useReservations` after any CRUD mutation so the Dashboard "Status de Inventario" widget always reflects live data.
+
 ### State Management
 
 All state is local (no global store). The `useEquipment` hook is the single source of truth for list data. Detail pages (`/equipo/:id`) fetch independently via `getEquipmentById`.
@@ -36,6 +46,7 @@ All state is local (no global store). The `useEquipment` hook is the single sour
 |---|---|
 | `/equipo/` | `EquipoPage` — paginated list with search + filters |
 | `/equipo/:equipmentId` | `EquipmentDetailPage` — single item full detail |
+| `/equipo/disponibilidad` | `EquipoDisponibilidadPage` — time-based availability view |
 
 ---
 
@@ -49,9 +60,10 @@ All state is local (no global store). The `useEquipment` hook is the single sour
 | `tenant_id` | `uuid` (FK → tenants) | RLS isolation |
 | `name` | `text` | Display name |
 | `description` | `text?` | Optional detail |
-| `type` | `text` | Equipment category (enum-like) |
+| `type` | `text` | Equipment category enum: `camara`, `lente`, `iluminacion`, `tramoya`, `audio`, `video`, `estudio`, `otros_accesorios` |
 | `status` | `text` | `disponible` / `mantenimiento` / `no_disponible` |
-| `quantity` | `int` | Stock count |
+| `quantity` | `int` | Total owned units |
+| `daily_rate` | `numeric` | Rate per day for billing |
 | `image_url` | `text?` | Storage bucket reference |
 | `created_at` / `created_by` | `timestamptz` / `uuid` | Audit fields |
 | `updated_at` / `updated_by` | `timestamptz` / `uuid` | Audit fields |
@@ -64,25 +76,24 @@ Row-level security enforces `tenant_id = auth.jwt() ->> 'tenant_id'` on all oper
 
 Equipment images are uploaded to the `equipment-images` bucket via `uploadEquipmentImage`. Paths follow `{tenantId}/{timestamp}-{filename}`.
 
-### View: `v_equipment_stats`
-
-Aggregates `equipment` rows by type to produce per-type `available` and `total` stock counts.
+### RPC: `get_today_equipment_stats()`
 
 > [!IMPORTANT]
-> This view uses `security_invoker = true`, ensuring it strictly enforces the same RLS policies as the base `equipment` table. It also groups by `tenant_id` to ensure total isolation.
+> Replaces the old `v_equipment_stats` view. The view only used the static `status = 'disponible'` flag; this RPC subtracts actively committed units from reservations overlapping today.
+
+Calculates per-type equipment availability for the **current calendar day**:
+
+- **Window**: `[current_date 00:00:00, current_date 23:59:59]`
+- **Formula**: `today_available = SUM(quantity_by_type) − SUM(committed_today_by_type)`
+- **Committed**: Units reserved in any `pending` or `confirmed` reservation whose `occupied_range` overlaps the daily window.
+- **Result**: Floored at 0 per type.
 
 ```sql
-create or replace view v_equipment_stats with (security_invoker = true) as
-  select
-    tenant_id,
-    type,
-    sum(quantity)                                          as total,
-    sum(quantity) filter (where status = 'disponible')     as available
-  from equipment
-    group by tenant_id, type;
+-- Returns: (type text, total bigint, today_available bigint)
+select * from get_today_equipment_stats();
 ```
 
-Used by `getEquipmentStats` and the dashboard "Status de Inventario" widget.
+Used by `getEquipmentStats` → `useEquipmentStats` → Dashboard "Status de Inventario" widget.
 
 ---
 
@@ -98,6 +109,6 @@ One function per file per Screaming Architecture standards:
 | `update-equipment.ts` | `UPDATE` with explicit column select |
 | `delete-equipment.ts` | `DELETE` by ID |
 | `upload-equipment-image.ts` | Storage bucket upload |
-| `get-equipment-stats.ts` | Queries `v_equipment_stats`; returns per-type `{ type, available, total }` |
+| `get-equipment-stats.ts` | Calls `get_today_equipment_stats()` RPC; returns per-type `{ type, available, total }` for today |
 
 All queries list columns explicitly — no wildcard `select('*')`.

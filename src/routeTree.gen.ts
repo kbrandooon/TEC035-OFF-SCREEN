@@ -18,6 +18,7 @@ import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as AcceptInviteRouteImport } from './routes/accept-invite'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
+import { Route as EquipoDisponibilidadRouteImport } from './routes/equipo.disponibilidad'
 import { Route as EquipoEquipmentIdRouteImport } from './routes/equipo.$equipmentId'
 import { Route as ConfigurationTeamRouteImport } from './routes/configuration/team'
 
@@ -66,6 +67,11 @@ const EquipoIndexRoute = EquipoIndexRouteImport.update({
   path: '/',
   getParentRoute: () => EquipoRoute,
 } as any)
+const EquipoDisponibilidadRoute = EquipoDisponibilidadRouteImport.update({
+  id: '/disponibilidad',
+  path: '/disponibilidad',
+  getParentRoute: () => EquipoRoute,
+} as any)
 const EquipoEquipmentIdRoute = EquipoEquipmentIdRouteImport.update({
   id: '/$equipmentId',
   path: '/$equipmentId',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/configuration/team': typeof ConfigurationTeamRoute
   '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
+  '/equipo/disponibilidad': typeof EquipoDisponibilidadRoute
   '/equipo/': typeof EquipoIndexRoute
 }
 export interface FileRoutesByTo {
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/configuration/team': typeof ConfigurationTeamRoute
   '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
+  '/equipo/disponibilidad': typeof EquipoDisponibilidadRoute
   '/equipo': typeof EquipoIndexRoute
 }
 export interface FileRoutesById {
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/configuration/team': typeof ConfigurationTeamRoute
   '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
+  '/equipo/disponibilidad': typeof EquipoDisponibilidadRoute
   '/equipo/': typeof EquipoIndexRoute
 }
 export interface FileRouteTypes {
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/configuration/team'
     | '/equipo/$equipmentId'
+    | '/equipo/disponibilidad'
     | '/equipo/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/configuration/team'
     | '/equipo/$equipmentId'
+    | '/equipo/disponibilidad'
     | '/equipo'
   id:
     | '__root__'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/configuration/team'
     | '/equipo/$equipmentId'
+    | '/equipo/disponibilidad'
     | '/equipo/'
   fileRoutesById: FileRoutesById
 }
@@ -234,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipoIndexRouteImport
       parentRoute: typeof EquipoRoute
     }
+    '/equipo/disponibilidad': {
+      id: '/equipo/disponibilidad'
+      path: '/disponibilidad'
+      fullPath: '/equipo/disponibilidad'
+      preLoaderRoute: typeof EquipoDisponibilidadRouteImport
+      parentRoute: typeof EquipoRoute
+    }
     '/equipo/$equipmentId': {
       id: '/equipo/$equipmentId'
       path: '/$equipmentId'
@@ -253,11 +272,13 @@ declare module '@tanstack/react-router' {
 
 interface EquipoRouteChildren {
   EquipoEquipmentIdRoute: typeof EquipoEquipmentIdRoute
+  EquipoDisponibilidadRoute: typeof EquipoDisponibilidadRoute
   EquipoIndexRoute: typeof EquipoIndexRoute
 }
 
 const EquipoRouteChildren: EquipoRouteChildren = {
   EquipoEquipmentIdRoute: EquipoEquipmentIdRoute,
+  EquipoDisponibilidadRoute: EquipoDisponibilidadRoute,
   EquipoIndexRoute: EquipoIndexRoute,
 }
 
