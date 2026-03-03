@@ -73,10 +73,13 @@ Status changes are atomic single-column updates (`updateReservationStatus`). No 
 
 ### View: `v_reservations`
 
-Pre-joins `reservations ← customers` to expose `customer_names` and `customer_last_name` as flat columns. Avoids PostgREST lateral join syntax (`!fk()`) in the API layer. RLS on `reservations` applies automatically.
+Pre-joins `reservations ← customers` to expose `customer_names` and `customer_last_name` as flat columns. 
+
+> [!IMPORTANT]
+> This view uses `security_invoker = true`, ensuring it strictly enforces the same RLS policies as the base `reservations` and `customers` tables.
 
 ```sql
-create or replace view v_reservations as
+create or replace view v_reservations with (security_invoker = true) as
   select r.*, c.names as customer_names, c.last_name as customer_last_name
   from reservations r
   left join customers c on c.id = r.customer_id;

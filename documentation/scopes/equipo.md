@@ -66,16 +66,20 @@ Equipment images are uploaded to the `equipment-images` bucket via `uploadEquipm
 
 ### View: `v_equipment_stats`
 
-Aggregates `equipment` rows by type to produce per-type `available` and `total` stock counts. This replaces the client-side `reduce` loop that previously fetched all rows and computed the breakdown in JavaScript.
+Aggregates `equipment` rows by type to produce per-type `available` and `total` stock counts.
+
+> [!IMPORTANT]
+> This view uses `security_invoker = true`, ensuring it strictly enforces the same RLS policies as the base `equipment` table. It also groups by `tenant_id` to ensure total isolation.
 
 ```sql
-create or replace view v_equipment_stats as
+create or replace view v_equipment_stats with (security_invoker = true) as
   select
+    tenant_id,
     type,
     sum(quantity)                                          as total,
     sum(quantity) filter (where status = 'disponible')     as available
   from equipment
-  group by type;
+    group by tenant_id, type;
 ```
 
 Used by `getEquipmentStats` and the dashboard "Status de Inventario" widget.

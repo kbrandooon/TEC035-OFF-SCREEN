@@ -70,16 +70,17 @@ Row-level security enforces `tenant_id = auth.jwt() ->> 'tenant_id'` on all oper
 
 ### View: `v_inventory_movements`
 
-Pre-joins `inventory ← equipment` to expose `equipment_name` as a plain column. This eliminates the `equipment(name)` PostgREST embedded select and the `as unknown` type cast that were previously needed in the API layer.
+Pre-joins `inventory ← equipment` to expose `equipment_name` as a plain column.
+
+> [!IMPORTANT]
+> This view uses `security_invoker = true`, ensuring it strictly enforces the same RLS policies as the base `inventory` and `equipment` tables.
 
 ```sql
-create or replace view v_inventory_movements as
+create or replace view v_inventory_movements with (security_invoker = true) as
   select i.*, e.name as equipment_name
   from inventory i
   left join equipment e on e.id = i.equipment_id;
 ```
-
-RLS policies on the `inventory` base table continue to apply because the view is `security invoker`.
 
 ---
 
