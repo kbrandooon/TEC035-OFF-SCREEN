@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { ForgotPasswordPage, useAuth } from '@/features/auth'
 
 export const Route = createFileRoute('/forgot-password')({
@@ -7,16 +6,9 @@ export const Route = createFileRoute('/forgot-password')({
 })
 
 function PublicOnlyRoute() {
-  const { user, isLoading } = useAuth()
-  const navigate = useNavigate()
+  const { isLoading } = useAuth()
 
-  useEffect(() => {
-    if (!isLoading && user) {
-      navigate({ to: '/dashboard', replace: true })
-    }
-  }, [user, isLoading, navigate])
-
-  if (isLoading || user) {
+  if (isLoading) {
     return null
   }
 
