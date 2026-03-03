@@ -181,10 +181,10 @@ function EmployeesPage() {
       <div className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
         <div>
           <h3 className='text-2xl font-bold tracking-tight text-slate-800 dark:text-white'>
-            Equipo
+            Miembros
           </h3>
           <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>
-            Gestiona el equipo de tu estudio.
+            Gestiona los miembros de tu estudio.
           </p>
         </div>
         {/* Only admins can invite new employees */}
@@ -196,7 +196,7 @@ function EmployeesPage() {
             <span className='material-symbols-outlined text-[20px] font-normal'>
               person_add
             </span>
-            Invitar al Equipo
+            Invitar Miembro
           </button>
         )}
       </div>
@@ -346,7 +346,7 @@ function EmployeesPage() {
               </div>
               <div>
                 <h2 className='text-xl font-bold text-slate-900 dark:text-white'>
-                  Invitar al Equipo
+                  Invitar Miembro
                 </h2>
                 <p className='text-sm text-slate-500 dark:text-slate-400'>
                   Se enviará un correo con el enlace de acceso

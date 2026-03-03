@@ -1,12 +1,30 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { supabase } from '@/supabase/client'
 import { signOut, useAuth, useIsAdmin, useRoleLabel } from '@/features/auth'
 import { TenantSwitcher } from '@/features/tenants'
 
+/** Connected search input config passed from pages that need header-level search. */
+interface HeaderSearch {
+  placeholder: string
+  value: string
+  onChange: (value: string) => void
+}
+
 /** Props for DashboardLayout */
 interface DashboardLayoutProps {
   children: ReactNode
+  /** When provided, renders a centered functional search bar in the header. */
+  headerSearch?: HeaderSearch
+}
+
+/**
+ * Module-level cache — persists for the lifetime of the JS bundle so navigating
+ * between sections never causes a flash of 'Cargando...' / 'Admin'.
+ */
+const layoutCache: { tenantName: string; fullName: string } = {
+  tenantName: '',
+  fullName: '',
 }
 
 /**
@@ -17,14 +35,49 @@ interface DashboardLayoutProps {
  *
  * @param children - Contenido principal de la página.
  */
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({
+  children,
+  headerSearch,
+}: DashboardLayoutProps) {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, session } = useAuth()
   const isAdmin = useIsAdmin()
   const roleLabel = useRoleLabel()
 
-  const [tenantName, setTenantName] = useState<string>('Cargando...')
-  const [fullName, setFullName] = useState<string>('Admin')
+  /** Track window.location.hash separately — TanStack Router doesn't react to hash-only changes. */
+  const [currentHash, setCurrentHash] = useState(() => window.location.hash)
+  useEffect(() => {
+    const onHashChange = () => setCurrentHash(window.location.hash)
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  /** True for routes where the header title + search should be hidden. */
+  const isHideHeader =
+    location.pathname.startsWith('/equipo') ||
+    location.pathname.startsWith('/inventario') ||
+    location.pathname.startsWith('/clientes') ||
+    location.pathname.startsWith('/configuration') ||
+    location.pathname.startsWith('/dashboard')
+
+  /** Full path including hash used for active state comparison. */
+  const fullPath = location.pathname + currentHash
+
+  /** Returns Tailwind classes for a nav link depending on whether it is the active route. */
+  const navLinkClass = (path: string) =>
+    fullPath === path
+      ? 'bg-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold text-white shadow-md transition-colors dark:text-white'
+      : 'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
+
+  /** Returns Tailwind classes for the icon inside a nav link. */
+  const navIconClass = (path: string) =>
+    fullPath === path
+      ? 'material-symbols-outlined fill-current text-[22px] font-normal'
+      : 'material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'
+
+  const [tenantName, setTenantName] = useState<string>(layoutCache.tenantName)
+  const [fullName, setFullName] = useState<string>(layoutCache.fullName)
 
   // Add Studio modal state
   const [showAddStudio, setShowAddStudio] = useState(false)
@@ -34,6 +87,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [createError, setCreateError] = useState<string | null>(null)
 
   useEffect(() => {
+    // Skip fetch when the cache is already populated (navigating between sections)
+    if (layoutCache.tenantName && layoutCache.fullName) return
+
     async function fetchLayoutData() {
       if (!user) return
 
@@ -52,13 +108,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       ])
 
       if (tenantResult.data?.name) {
+        layoutCache.tenantName = tenantResult.data.name
         setTenantName(tenantResult.data.name)
       }
 
       if (profileResult.data) {
         const { first_name, last_name } = profileResult.data
         const name = [first_name, last_name].filter(Boolean).join(' ')
-        setFullName(name || user.email?.split('@')[0] || 'Admin')
+        const resolved = name || user.email?.split('@')[0] || ''
+        layoutCache.fullName = resolved
+        setFullName(resolved)
       }
     }
 
@@ -127,51 +186,31 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Navigation */}
           <nav className='flex flex-col gap-1'>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='/dashboard'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                dashboard
-              </span>
+            <Link to='/dashboard' className={navLinkClass('/dashboard')}>
+              <span className={navIconClass('/dashboard')}>dashboard</span>
               <span className='text-sm font-medium'>Panel General</span>
-            </a>
+            </Link>
             <a
-              className='bg-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold text-white shadow-md transition-colors dark:text-white'
-              href='#'
+              href='/dashboard#reservas'
+              className={navLinkClass('/dashboard#reservas')}
             >
-              <span className='material-symbols-outlined fill-current text-[22px] font-normal'>
+              <span className={navIconClass('/dashboard#reservas')}>
                 calendar_month
               </span>
-              <span className='text-sm'>Reservas</span>
+              <span className='text-sm font-medium'>Reservas</span>
             </a>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='#'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                videocam
-              </span>
+            <Link to='/equipo' className={navLinkClass('/equipo')}>
+              <span className={navIconClass('/equipo')}>videocam</span>
               <span className='text-sm font-medium'>Equipo</span>
-            </a>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='#'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                group
-              </span>
+            </Link>
+            <Link to='/clientes' className={navLinkClass('/clientes')}>
+              <span className={navIconClass('/clientes')}>group</span>
               <span className='text-sm font-medium'>Clientes</span>
-            </a>
-            <a
-              className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
-              href='#'
-            >
-              <span className='material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
-                inventory_2
-              </span>
+            </Link>
+            <Link to='/inventario' className={navLinkClass('/inventario')}>
+              <span className={navIconClass('/inventario')}>inventory_2</span>
               <span className='text-sm font-medium'>Inventario</span>
-            </a>
+            </Link>
           </nav>
         </div>
 
@@ -200,15 +239,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               {/* Sub-items */}
               {configOpen && (
                 <div className='mt-1 ml-3 flex flex-col gap-0.5 border-l border-slate-200 pl-4 dark:border-slate-700'>
-                  <a
-                    href='/configuration/team'
+                  <Link
+                    to='/configuration/team'
                     className='group flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
                   >
                     <span className='material-symbols-outlined text-[18px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
                       badge
                     </span>
-                    <span className='font-medium'>Equipo</span>
-                  </a>
+                    <span className='font-medium'>Miembros</span>
+                  </Link>
                 </div>
               )}
             </div>
@@ -228,22 +267,57 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* ─── Main Content ─────────────────────────────────────── */}
       <main className='bg-background-light dark:bg-background-dark flex h-screen flex-1 flex-col overflow-hidden'>
-        {/* Header */}
-        <header className='bg-surface-light dark:bg-surface-dark z-10 flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-8 dark:border-slate-700'>
-          <h2 className='text-lg font-bold tracking-tight text-slate-800 dark:text-white'>
-            Resumen de Reservas
-          </h2>
-          <div className='flex items-center gap-6'>
-            <div className='relative hidden w-64 md:block'>
-              <span className='material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-[20px] font-normal text-slate-400'>
-                search
-              </span>
-              <input
-                className='focus:ring-primary w-full rounded-lg border-none bg-slate-100 py-2 pr-4 pl-10 text-sm text-slate-900 shadow-inner transition-all placeholder:text-slate-400 focus:bg-white focus:ring-1 focus:outline-none dark:bg-slate-700 dark:text-white dark:focus:bg-slate-600'
-                placeholder='Buscar reservas...'
-                type='text'
-              />
+        {/* ─── Header ───────────────────────────────────────────── */}
+        <header className='bg-surface-light dark:bg-surface-dark relative z-10 flex h-16 shrink-0 items-center border-b border-slate-200 px-8 dark:border-slate-700'>
+          {/* Left: title — hidden on equipo & inventario routes */}
+          {!isHideHeader && !headerSearch && (
+            <h2 className='text-lg font-bold tracking-tight text-slate-800 dark:text-white'>
+              Resumen de Reservas
+            </h2>
+          )}
+
+          {/* Center: search — shown when headerSearch prop is passed */}
+          {headerSearch && (
+            <div className='absolute left-1/2 -translate-x-1/2'>
+              <div className='relative w-72'>
+                <span className='material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-[18px] font-normal text-slate-400'>
+                  search
+                </span>
+                <input
+                  type='text'
+                  value={headerSearch.value}
+                  onChange={(e) => headerSearch.onChange(e.target.value)}
+                  placeholder={headerSearch.placeholder}
+                  className='w-full rounded-lg border-none bg-slate-100 py-2 pr-4 pl-9 text-sm text-slate-900 shadow-inner placeholder:text-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-300 focus:outline-none dark:bg-slate-700 dark:text-white dark:focus:bg-slate-600'
+                />
+                {headerSearch.value && (
+                  <button
+                    onClick={() => headerSearch.onChange('')}
+                    className='absolute top-1/2 right-2.5 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white'
+                  >
+                    <span className='material-symbols-outlined text-[15px] font-normal'>
+                      close
+                    </span>
+                  </button>
+                )}
+              </div>
             </div>
+          )}
+
+          {/* Right: static search (non-clientes routes) + notifications + user */}
+          <div className='ml-auto flex items-center gap-6'>
+            {!isHideHeader && !headerSearch && (
+              <div className='relative hidden w-64 md:block'>
+                <span className='material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-[20px] font-normal text-slate-400'>
+                  search
+                </span>
+                <input
+                  className='focus:ring-primary w-full rounded-lg border-none bg-slate-100 py-2 pr-4 pl-10 text-sm text-slate-900 shadow-inner transition-all placeholder:text-slate-400 focus:bg-white focus:ring-1 focus:outline-none dark:bg-slate-700 dark:text-white dark:focus:bg-slate-600'
+                  placeholder='Buscar reservas...'
+                  type='text'
+                />
+              </div>
+            )}
             <div className='flex items-center gap-4'>
               <button className='relative rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700'>
                 <span className='material-symbols-outlined font-normal'>
