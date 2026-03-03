@@ -64,6 +64,22 @@ Row-level security enforces `tenant_id = auth.jwt() ->> 'tenant_id'` on all oper
 
 Equipment images are uploaded to the `equipment-images` bucket via `uploadEquipmentImage`. Paths follow `{tenantId}/{timestamp}-{filename}`.
 
+### View: `v_equipment_stats`
+
+Aggregates `equipment` rows by type to produce per-type `available` and `total` stock counts. This replaces the client-side `reduce` loop that previously fetched all rows and computed the breakdown in JavaScript.
+
+```sql
+create or replace view v_equipment_stats as
+  select
+    type,
+    sum(quantity)                                          as total,
+    sum(quantity) filter (where status = 'disponible')     as available
+  from equipment
+  group by type;
+```
+
+Used by `getEquipmentStats` and the dashboard "Status de Inventario" widget.
+
 ---
 
 ## API Layer (`src/features/equipo/api/`)
@@ -78,5 +94,6 @@ One function per file per Screaming Architecture standards:
 | `update-equipment.ts` | `UPDATE` with explicit column select |
 | `delete-equipment.ts` | `DELETE` by ID |
 | `upload-equipment-image.ts` | Storage bucket upload |
+| `get-equipment-stats.ts` | Queries `v_equipment_stats`; returns per-type `{ type, available, total }` |
 
 All queries list columns explicitly — no wildcard `select('*')`.

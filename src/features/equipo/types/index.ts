@@ -21,6 +21,7 @@ export interface Equipment {
   type: EquipmentType
   status: EquipmentStatus
   quantity: number
+  daily_rate: number
   image_url: string | null
   created_at: string
   created_by: string | null
@@ -34,5 +35,6 @@ export interface EquipmentFormValues {
   description: string
   type: EquipmentType
   status: EquipmentStatus
+  daily_rate: number
   image_url: string | null
 }

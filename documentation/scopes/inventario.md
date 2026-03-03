@@ -68,9 +68,18 @@ All filters are applied server-side before the SQL `.range()`. Any filter change
 
 Row-level security enforces `tenant_id = auth.jwt() ->> 'tenant_id'` on all operations.
 
-### Join Strategy
+### View: `v_inventory_movements`
 
-The `equipment_name` field is resolved by a Supabase embedded select (`equipment(name)`) — not a wildcard — and mapped in the API layer so components receive a flat `InventoryMovement` type.
+Pre-joins `inventory ← equipment` to expose `equipment_name` as a plain column. This eliminates the `equipment(name)` PostgREST embedded select and the `as unknown` type cast that were previously needed in the API layer.
+
+```sql
+create or replace view v_inventory_movements as
+  select i.*, e.name as equipment_name
+  from inventory i
+  left join equipment e on e.id = i.equipment_id;
+```
+
+RLS policies on the `inventory` base table continue to apply because the view is `security invoker`.
 
 ---
 
@@ -80,7 +89,7 @@ One function per file per Screaming Architecture standards:
 
 | File | Operation |
 |---|---|
-| `get-inventory.ts` | Paginated + filtered list with `.range()`, date/type filters |
+| `get-inventory.ts` | Queries `v_inventory_movements`; paginated + filtered with `.range()` and date/type filters |
 | `create-inventory.ts` | `INSERT` new movement |
 | `update-inventory.ts` | `UPDATE` existing movement by ID |
 | `delete-inventory.ts` | `DELETE` movement by ID |

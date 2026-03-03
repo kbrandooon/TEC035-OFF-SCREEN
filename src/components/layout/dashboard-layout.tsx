@@ -45,20 +45,34 @@ export function DashboardLayout({
   const isAdmin = useIsAdmin()
   const roleLabel = useRoleLabel()
 
+  /** Track window.location.hash separately — TanStack Router doesn't react to hash-only changes. */
+  const [currentHash, setCurrentHash] = useState(() => window.location.hash)
+  useEffect(() => {
+    const onHashChange = () => setCurrentHash(window.location.hash)
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
   /** True for routes where the header title + search should be hidden. */
   const isHideHeader =
     location.pathname.startsWith('/equipo') ||
-    location.pathname.startsWith('/inventario')
+    location.pathname.startsWith('/inventario') ||
+    location.pathname.startsWith('/clientes') ||
+    location.pathname.startsWith('/configuration') ||
+    location.pathname.startsWith('/dashboard')
+
+  /** Full path including hash used for active state comparison. */
+  const fullPath = location.pathname + currentHash
 
   /** Returns Tailwind classes for a nav link depending on whether it is the active route. */
   const navLinkClass = (path: string) =>
-    location.pathname === path
+    fullPath === path
       ? 'bg-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold text-white shadow-md transition-colors dark:text-white'
       : 'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
 
   /** Returns Tailwind classes for the icon inside a nav link. */
   const navIconClass = (path: string) =>
-    location.pathname === path
+    fullPath === path
       ? 'material-symbols-outlined fill-current text-[22px] font-normal'
       : 'material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'
 
@@ -176,10 +190,15 @@ export function DashboardLayout({
               <span className={navIconClass('/dashboard')}>dashboard</span>
               <span className='text-sm font-medium'>Panel General</span>
             </Link>
-            <Link to='/dashboard' className={navLinkClass('/dashboard')}>
-              <span className={navIconClass('/dashboard')}>calendar_month</span>
+            <a
+              href='/dashboard#reservas'
+              className={navLinkClass('/dashboard#reservas')}
+            >
+              <span className={navIconClass('/dashboard#reservas')}>
+                calendar_month
+              </span>
               <span className='text-sm font-medium'>Reservas</span>
-            </Link>
+            </a>
             <Link to='/equipo' className={navLinkClass('/equipo')}>
               <span className={navIconClass('/equipo')}>videocam</span>
               <span className='text-sm font-medium'>Equipo</span>
@@ -227,7 +246,7 @@ export function DashboardLayout({
                     <span className='material-symbols-outlined text-[18px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
                       badge
                     </span>
-                    <span className='font-medium'>Equipo</span>
+                    <span className='font-medium'>Miembros</span>
                   </Link>
                 </div>
               )}

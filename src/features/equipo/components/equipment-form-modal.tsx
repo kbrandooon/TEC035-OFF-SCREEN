@@ -49,6 +49,7 @@ export function EquipmentFormModal({
   const [description, setDescription] = useState('')
   const [type, setType] = useState<EquipmentType>('camara')
   const [status, setStatus] = useState<EquipmentStatus>('disponible')
+  const [dailyRate, setDailyRate] = useState<number>(0)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -60,6 +61,7 @@ export function EquipmentFormModal({
     setDescription(equipment?.description ?? '')
     setType(equipment?.type ?? 'camara')
     setStatus(equipment?.status ?? 'disponible')
+    setDailyRate(equipment?.daily_rate ?? 0)
     setImageFile(null)
     setImagePreview(equipment?.image_url ?? null)
     if (isOpen) setTimeout(() => nameRef.current?.focus(), 50)
@@ -95,7 +97,14 @@ export function EquipmentFormModal({
         imageUrl = null
       }
 
-      await onSave({ name, description, type, status, image_url: imageUrl })
+      await onSave({
+        name,
+        description,
+        type,
+        status,
+        daily_rate: dailyRate,
+        image_url: imageUrl,
+      })
     } finally {
       setIsUploading(false)
     }
@@ -272,6 +281,34 @@ export function EquipmentFormModal({
               </div>
             </div>
 
+            {/* Tarifa por Día */}
+            <div>
+              <label
+                htmlFor='equip-daily-rate'
+                className='mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-200'
+              >
+                Tarifa por Día (MXN)
+              </label>
+              <div className='relative'>
+                <span className='pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm font-bold text-slate-400'>
+                  $
+                </span>
+                <input
+                  id='equip-daily-rate'
+                  type='number'
+                  min={0}
+                  step='any'
+                  value={dailyRate || ''}
+                  onChange={(e) =>
+                    setDailyRate(parseFloat(e.target.value) || 0)
+                  }
+                  disabled={busy}
+                  placeholder='0.00'
+                  className='block w-full rounded-lg border border-slate-300 py-2.5 pr-3 pl-7 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-slate-500 focus:ring-1 focus:ring-slate-500 focus:outline-none disabled:opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-slate-500'
+                />
+              </div>
+            </div>
+
             {/* Description */}
             <div>
               <label
@@ -302,7 +339,7 @@ export function EquipmentFormModal({
                 <span className='material-symbols-outlined animate-spin text-[16px] font-normal'>
                   progress_activity
                 </span>
-                Agregando Equipo...
+                {equipment ? 'Actualizando producto...' : 'Agregando Equipo...'}
               </div>
             )}
 

@@ -1,4 +1,5 @@
 export { useEquipment } from './hooks/use-equipment'
+export { useEquipmentStats } from './hooks/use-equipment-stats'
 export { EquipmentList } from './components/equipment-list'
 export { EquipmentCard } from './components/equipment-card'
 export { EquipmentDetailView } from './components/equipment-detail-view'
@@ -11,3 +12,4 @@ export type {
   EquipmentStatus,
   EquipmentType,
 } from './types'
+export type { EquipmentTypeStat } from './api/get-equipment-stats'

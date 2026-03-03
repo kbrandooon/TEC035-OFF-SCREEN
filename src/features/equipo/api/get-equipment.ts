@@ -37,7 +37,7 @@ export async function getEquipment(
   let query = supabase
     .from('equipment')
     .select(
-      'id, tenant_id, name, description, type, status, quantity, image_url, created_at, created_by, updated_at, updated_by',
+      'id, tenant_id, name, description, type, status, quantity, daily_rate, image_url, created_at, created_by, updated_at, updated_by',
       { count: 'exact' }
     )
     .order('name')

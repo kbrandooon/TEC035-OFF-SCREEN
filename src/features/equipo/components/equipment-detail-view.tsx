@@ -147,6 +147,18 @@ export function EquipmentDetailView({
               label='Tipo'
               value={TYPE_LABELS[item.type]}
             />
+            <DetailField
+              icon='payments'
+              label='Tarifa por Día'
+              value={
+                item.daily_rate > 0
+                  ? item.daily_rate.toLocaleString('es-MX', {
+                      style: 'currency',
+                      currency: 'MXN',
+                    }) + '/día'
+                  : 'Sin tarifa definida'
+              }
+            />
             {item.description && (
               <DetailField
                 icon='notes'

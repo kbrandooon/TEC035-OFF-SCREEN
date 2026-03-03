@@ -104,6 +104,18 @@ export function EquipmentCard({ item, onClick }: EquipmentCardProps) {
               {item.description}
             </p>
           )}
+          {item.daily_rate > 0 && (
+            <p className='mt-1.5 flex items-center gap-1 text-xs font-bold text-[#2d3748] dark:text-slate-300'>
+              <span className='material-symbols-outlined text-[12px] font-normal'>
+                payments
+              </span>
+              {item.daily_rate.toLocaleString('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+              })}
+              <span className='font-normal text-slate-400'>/día</span>
+            </p>
+          )}
         </div>
 
         {/* Status row */}

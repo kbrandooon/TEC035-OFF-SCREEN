@@ -394,7 +394,10 @@ function EquipoPage() {
             setSelectedItem(null)
             void refetch()
           }}
-          onUpdated={(updated) => setSelectedItem(updated)}
+          onUpdated={(updated) => {
+            setSelectedItem(updated)
+            void refetch()
+          }}
         />
       )}
     </DashboardLayout>
