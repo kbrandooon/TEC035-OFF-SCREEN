@@ -156,7 +156,7 @@ export function ReservationDetailModal({
               Detalle de Reserva
             </p>
             <h2 className='mt-0.5 truncate text-xl font-bold text-white'>
-              {r.clientName || 'Sin cliente'}
+              {r.clientName || r.clientProfileId || 'Sin cliente'}
             </h2>
           </div>
 

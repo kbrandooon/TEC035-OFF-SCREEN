@@ -1,9 +1,20 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useSignup } from '../hooks/use-signup'
+import { ClientProfileModal } from './client-profile-modal'
+import { RoleToggle } from './role-toggle'
 
 const BRAND_IMAGE = '/images/LOGIN/1.jpeg'
 
+/**
+ * SignupPage Component
+ *
+ * Renders the registration view for OFF SCREEN.
+ * Includes a role toggle (Cliente / Estudio) and, for clients,
+ * opens a profile form modal after successful signup.
+ *
+ * @returns {React.ReactElement} The signup page UI
+ */
 export function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -14,14 +25,20 @@ export function SignupPage() {
     setPassword,
     confirmPassword,
     setConfirmPassword,
+    role,
+    setRole,
     isLoading,
     error,
+    showProfileForm,
     handleSignup,
     handleGoogleSignup,
   } = useSignup()
 
   return (
     <div className='bg-surface-light font-display flex min-h-screen items-center justify-center overflow-hidden text-slate-800'>
+      {/* Client profile modal — rendered on top after a 'cliente' signup */}
+      {showProfileForm && <ClientProfileModal email={email} />}
+
       <div className='flex h-screen w-full'>
         {/* Left Side: Branding / Imagery */}
         <div className='relative hidden h-full w-1/2 overflow-hidden bg-slate-900 lg:block'>
@@ -53,7 +70,7 @@ export function SignupPage() {
 
         {/* Right Side: Signup Form */}
         <div className='relative flex h-full w-full flex-col items-center justify-center overflow-y-auto bg-white p-8 lg:w-1/2 lg:p-16 xl:p-24'>
-          <div className='mx-auto w-full max-w-md space-y-10'>
+          <div className='mx-auto w-full max-w-md space-y-8'>
             <div className='space-y-2 text-center'>
               <div className='mx-auto mb-6 flex size-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg'>
                 <span className='material-symbols-outlined text-2xl'>
@@ -64,9 +81,14 @@ export function SignupPage() {
                 Crear una cuenta
               </h1>
               <p className='text-sm font-medium text-slate-500'>
-                Ingresa tu correo y contraseña para comenzar.
+                {role === 'cliente'
+                  ? 'Regístrate para reservar el estudio y equipos.'
+                  : 'Crea y administra tu propio estudio audiovisual.'}
               </p>
             </div>
+
+            {/* Role Toggle */}
+            <RoleToggle value={role} onChange={setRole} disabled={isLoading} />
 
             <form className='space-y-6' onSubmit={handleSignup}>
               <div className='space-y-5'>
@@ -219,7 +241,7 @@ export function SignupPage() {
               </button>
             </div>
 
-            <p className='mt-8 text-center text-sm font-medium text-slate-500'>
+            <p className='mt-4 text-center text-sm font-medium text-slate-500'>
               ¿Ya tienes una cuenta?{' '}
               <Link
                 to='/'

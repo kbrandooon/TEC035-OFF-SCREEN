@@ -15,12 +15,16 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as EquipoRouteImport } from './routes/equipo'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ClientesRouteImport } from './routes/clientes'
+import { Route as ClienteRouteImport } from './routes/cliente'
 import { Route as AcceptInviteRouteImport } from './routes/accept-invite'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
+import { Route as ClienteIndexRouteImport } from './routes/cliente.index'
 import { Route as EquipoDisponibilidadRouteImport } from './routes/equipo.disponibilidad'
 import { Route as EquipoEquipmentIdRouteImport } from './routes/equipo.$equipmentId'
 import { Route as ConfigurationTeamRouteImport } from './routes/configuration/team'
+import { Route as ClienteCarritoRouteImport } from './routes/cliente.carrito'
+import { Route as ClienteEquipoEquipmentIdRouteImport } from './routes/cliente.equipo.$equipmentId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -52,6 +56,11 @@ const ClientesRoute = ClientesRouteImport.update({
   path: '/clientes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClienteRoute = ClienteRouteImport.update({
+  id: '/cliente',
+  path: '/cliente',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcceptInviteRoute = AcceptInviteRouteImport.update({
   id: '/accept-invite',
   path: '/accept-invite',
@@ -66,6 +75,11 @@ const EquipoIndexRoute = EquipoIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => EquipoRoute,
+} as any)
+const ClienteIndexRoute = ClienteIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ClienteRoute,
 } as any)
 const EquipoDisponibilidadRoute = EquipoDisponibilidadRouteImport.update({
   id: '/disponibilidad',
@@ -82,20 +96,35 @@ const ConfigurationTeamRoute = ConfigurationTeamRouteImport.update({
   path: '/configuration/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClienteCarritoRoute = ClienteCarritoRouteImport.update({
+  id: '/carrito',
+  path: '/carrito',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClienteEquipoEquipmentIdRoute =
+  ClienteEquipoEquipmentIdRouteImport.update({
+    id: '/equipo/$equipmentId',
+    path: '/equipo/$equipmentId',
+    getParentRoute: () => ClienteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accept-invite': typeof AcceptInviteRoute
+  '/cliente': typeof ClienteRouteWithChildren
   '/clientes': typeof ClientesRoute
   '/dashboard': typeof DashboardRoute
   '/equipo': typeof EquipoRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventario': typeof InventarioRoute
   '/signup': typeof SignupRoute
+  '/cliente/carrito': typeof ClienteCarritoRoute
   '/configuration/team': typeof ConfigurationTeamRoute
   '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
   '/equipo/disponibilidad': typeof EquipoDisponibilidadRoute
+  '/cliente/': typeof ClienteIndexRoute
   '/equipo/': typeof EquipoIndexRoute
+  '/cliente/equipo/$equipmentId': typeof ClienteEquipoEquipmentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -105,41 +134,52 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventario': typeof InventarioRoute
   '/signup': typeof SignupRoute
+  '/cliente/carrito': typeof ClienteCarritoRoute
   '/configuration/team': typeof ConfigurationTeamRoute
   '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
   '/equipo/disponibilidad': typeof EquipoDisponibilidadRoute
+  '/cliente': typeof ClienteIndexRoute
   '/equipo': typeof EquipoIndexRoute
+  '/cliente/equipo/$equipmentId': typeof ClienteEquipoEquipmentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/accept-invite': typeof AcceptInviteRoute
+  '/cliente': typeof ClienteRouteWithChildren
   '/clientes': typeof ClientesRoute
   '/dashboard': typeof DashboardRoute
   '/equipo': typeof EquipoRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inventario': typeof InventarioRoute
   '/signup': typeof SignupRoute
+  '/cliente/carrito': typeof ClienteCarritoRoute
   '/configuration/team': typeof ConfigurationTeamRoute
   '/equipo/$equipmentId': typeof EquipoEquipmentIdRoute
   '/equipo/disponibilidad': typeof EquipoDisponibilidadRoute
+  '/cliente/': typeof ClienteIndexRoute
   '/equipo/': typeof EquipoIndexRoute
+  '/cliente/equipo/$equipmentId': typeof ClienteEquipoEquipmentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/accept-invite'
+    | '/cliente'
     | '/clientes'
     | '/dashboard'
     | '/equipo'
     | '/forgot-password'
     | '/inventario'
     | '/signup'
+    | '/cliente/carrito'
     | '/configuration/team'
     | '/equipo/$equipmentId'
     | '/equipo/disponibilidad'
+    | '/cliente/'
     | '/equipo/'
+    | '/cliente/equipo/$equipmentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -149,29 +189,37 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/inventario'
     | '/signup'
+    | '/cliente/carrito'
     | '/configuration/team'
     | '/equipo/$equipmentId'
     | '/equipo/disponibilidad'
+    | '/cliente'
     | '/equipo'
+    | '/cliente/equipo/$equipmentId'
   id:
     | '__root__'
     | '/'
     | '/accept-invite'
+    | '/cliente'
     | '/clientes'
     | '/dashboard'
     | '/equipo'
     | '/forgot-password'
     | '/inventario'
     | '/signup'
+    | '/cliente/carrito'
     | '/configuration/team'
     | '/equipo/$equipmentId'
     | '/equipo/disponibilidad'
+    | '/cliente/'
     | '/equipo/'
+    | '/cliente/equipo/$equipmentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcceptInviteRoute: typeof AcceptInviteRoute
+  ClienteRoute: typeof ClienteRouteWithChildren
   ClientesRoute: typeof ClientesRoute
   DashboardRoute: typeof DashboardRoute
   EquipoRoute: typeof EquipoRouteWithChildren
@@ -225,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cliente': {
+      id: '/cliente'
+      path: '/cliente'
+      fullPath: '/cliente'
+      preLoaderRoute: typeof ClienteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accept-invite': {
       id: '/accept-invite'
       path: '/accept-invite'
@@ -245,6 +300,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/equipo/'
       preLoaderRoute: typeof EquipoIndexRouteImport
       parentRoute: typeof EquipoRoute
+    }
+    '/cliente/': {
+      id: '/cliente/'
+      path: '/'
+      fullPath: '/cliente/'
+      preLoaderRoute: typeof ClienteIndexRouteImport
+      parentRoute: typeof ClienteRoute
     }
     '/equipo/disponibilidad': {
       id: '/equipo/disponibilidad'
@@ -267,8 +329,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConfigurationTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cliente/carrito': {
+      id: '/cliente/carrito'
+      path: '/carrito'
+      fullPath: '/cliente/carrito'
+      preLoaderRoute: typeof ClienteCarritoRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/equipo/$equipmentId': {
+      id: '/cliente/equipo/$equipmentId'
+      path: '/equipo/$equipmentId'
+      fullPath: '/cliente/equipo/$equipmentId'
+      preLoaderRoute: typeof ClienteEquipoEquipmentIdRouteImport
+      parentRoute: typeof ClienteRoute
+    }
   }
 }
+
+interface ClienteRouteChildren {
+  ClienteCarritoRoute: typeof ClienteCarritoRoute
+  ClienteIndexRoute: typeof ClienteIndexRoute
+  ClienteEquipoEquipmentIdRoute: typeof ClienteEquipoEquipmentIdRoute
+}
+
+const ClienteRouteChildren: ClienteRouteChildren = {
+  ClienteCarritoRoute: ClienteCarritoRoute,
+  ClienteIndexRoute: ClienteIndexRoute,
+  ClienteEquipoEquipmentIdRoute: ClienteEquipoEquipmentIdRoute,
+}
+
+const ClienteRouteWithChildren =
+  ClienteRoute._addFileChildren(ClienteRouteChildren)
 
 interface EquipoRouteChildren {
   EquipoEquipmentIdRoute: typeof EquipoEquipmentIdRoute
@@ -288,6 +379,7 @@ const EquipoRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcceptInviteRoute: AcceptInviteRoute,
+  ClienteRoute: ClienteRouteWithChildren,
   ClientesRoute: ClientesRoute,
   DashboardRoute: DashboardRoute,
   EquipoRoute: EquipoRouteWithChildren,

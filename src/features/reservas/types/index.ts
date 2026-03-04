@@ -30,4 +30,6 @@ export interface Reservation extends ReservationFormValues {
   tenant_id: string
   created_at: string
   status: ReservationStatus
+  /** Populated for client-originated reservations when customer_id is empty. */
+  clientProfileId?: string
 }
