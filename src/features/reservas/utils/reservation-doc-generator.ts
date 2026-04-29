@@ -2,6 +2,15 @@ import type { ReservationFormValues } from '../types'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 const MONTHS = [
   'Enero',
   'Febrero',
@@ -64,6 +73,10 @@ export function generateReservationHTML(values: ReservationFormValues): string {
   const hours = calcHours(values.startTime, values.endTime)
   const multiDay = days > 1
 
+  const safeClientName = escapeHtml(values.clientName ?? '')
+  const safeAddress = escapeHtml(values.address ?? '')
+  const safeNotes = escapeHtml(values.notes ?? '')
+
   const equipSub = values.equipmentItems.reduce(
     (acc, item) => acc + item.quantity * item.daily_rate * days,
     0
@@ -82,22 +95,26 @@ export function generateReservationHTML(values: ReservationFormValues): string {
        }`
 
   const equipRows = values.equipmentItems
-    .map(
-      (item) => `
+    .map((item) => {
+      const safeName = escapeHtml(item.name ?? '')
+      const safeImgUrl = item.image_url
+        ? escapeHtml(item.image_url).replace(/^javascript:/i, '')
+        : null
+      return `
     <tr>
       <td class="td-thumb">
         ${
-          item.image_url
-            ? `<img src="${item.image_url}" alt="${item.name}" class="thumb" />`
+          safeImgUrl
+            ? `<img src="${safeImgUrl}" alt="${safeName}" class="thumb" />`
             : `<div class="thumb-ph">🎥</div>`
         }
       </td>
-      <td class="td-desc">${item.name}</td>
+      <td class="td-desc">${safeName}</td>
       <td class="td-num">${multiDay ? `${item.quantity} × ${days}` : item.quantity}</td>
       <td class="td-num">${item.daily_rate > 0 ? fmtMXN(item.daily_rate) : '—'}</td>
       <td class="td-total">${item.daily_rate > 0 ? fmtMXN(item.quantity * item.daily_rate * days) : '—'}</td>
     </tr>`
-    )
+    })
     .join('')
 
   return `<!DOCTYPE html>
@@ -237,8 +254,8 @@ export function generateReservationHTML(values: ReservationFormValues): string {
     <div class="info-row">
       <div class="info-cell border-r">
         <p class="label">Reservado por:</p>
-        <p class="client-name">${values.clientName || '—'}</p>
-        ${values.address ? `<p class="client-addr">${values.address}</p>` : ''}
+        <p class="client-name">${safeClientName || '—'}</p>
+        ${safeAddress ? `<p class="client-addr">${safeAddress}</p>` : ''}
       </div>
       <div class="info-cell">
         <p class="label">Detalles</p>
@@ -293,7 +310,7 @@ export function generateReservationHTML(values: ReservationFormValues): string {
     <!-- NOTES -->
     <div class="notes">
       <p class="label">Notas</p>
-      <p class="notes-text">${values.notes}</p>
+      <p class="notes-text">${safeNotes}</p>
     </div>`
         : ''
     }
@@ -317,8 +334,12 @@ export function generateReservationHTML(values: ReservationFormValues): string {
  */
 export function openReservationDocument(values: ReservationFormValues): void {
   const html = generateReservationHTML(values)
-  const tab = window.open('', '_blank')
-  if (!tab) return
-  tab.document.write(html)
-  tab.document.close()
+  const blob = new Blob([html], { type: 'text/html; charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const tab = window.open(url, '_blank')
+  if (tab) {
+    tab.addEventListener('load', () => URL.revokeObjectURL(url), { once: true })
+  } else {
+    URL.revokeObjectURL(url)
+  }
 }

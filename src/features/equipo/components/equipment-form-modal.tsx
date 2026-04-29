@@ -67,6 +67,12 @@ export function EquipmentFormModal({
     if (isOpen) setTimeout(() => nameRef.current?.focus(), 50)
   }, [equipment, isOpen])
 
+  useEffect(() => {
+    return () => {
+      if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+    }
+  }, [imagePreview])
+
   if (!isOpen) return null
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

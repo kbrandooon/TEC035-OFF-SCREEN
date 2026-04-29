@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { deleteEquipment } from '../api/delete-equipment'
 import { getEquipmentById } from '../api/get-equipment-by-id'
 import { updateEquipment } from '../api/update-equipment'
@@ -53,8 +54,9 @@ export function EquipmentDetailModal({
       await deleteEquipment(equipment.id)
       onDeleted()
       onClose()
-    } catch {
+    } catch (err) {
       setIsDeleting(false)
+      toast.error(err instanceof Error ? err.message : 'Error al eliminar el equipo.')
     }
   }
 

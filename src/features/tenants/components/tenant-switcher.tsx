@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import { supabase } from '@/supabase/client'
 import { useIsAdmin } from '@/features/auth'
 import { getMyTenants } from '@/features/tenants/api/get-my-tenants'
@@ -72,8 +73,9 @@ export function TenantSwitcher({
       await switchActiveTenant(tenantId)
       await supabase.auth.refreshSession()
       window.location.reload()
-    } catch {
+    } catch (err) {
       setIsSwitching(false)
+      toast.error(err instanceof Error ? err.message : 'Error al cambiar de estudio.')
     }
   }
 
