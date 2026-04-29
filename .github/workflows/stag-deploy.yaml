@@ -1,0 +1,21 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  call-central-workflow:
+    uses: roii-tech/reusable-workflows/.github/workflows/react-deploy-staging.yml@main
+
+    secrets:
+      VITE_SUPABASE_URL: ${{ secrets.STAG_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.STAG_SUPABASE_ANON_KEY }}
+
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_S3_BUCKET: ${{ secrets.STAG_AWS_S3_BUCKET }}
+      AWS_CLOUDFRONT_ID: ${{ secrets.STAG_AWS_CLOUDFRONT_ID }}
+
+      GOOGLE_CHAT_URL: ${{ secrets.GOOGLE_CHAT_URL }}
