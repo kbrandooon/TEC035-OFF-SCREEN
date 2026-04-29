@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useAuth } from '@/features/auth'
 import {
@@ -63,6 +63,7 @@ const TYPE_OPTIONS: { value: EquipmentType | null; label: string }[] = [
  * Clicking a card opens the detail modal overlay.
  */
 function EquipoPage() {
+  const navigate = useNavigate()
   const { user, isLoading: isAuthLoading } = useAuth()
 
   const [search, setSearch] = useState('')
@@ -93,7 +94,10 @@ function EquipoPage() {
   const [saveError, setSaveError] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<Equipment | null>(null)
 
-  if (!isAuthLoading && !user) return null
+  if (!isAuthLoading && !user) {
+    void navigate({ to: '/' })
+    return null
+  }
 
   const changeStatus = (tab: StatusTab) => {
     setStatusFilter(tab)

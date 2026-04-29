@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useLogin } from '../hooks/use-login'
 
+const CAROUSEL_INTERVAL_MS = 6000
+
 const CAROUSEL_IMAGES = [
   '/images/LOGIN/1.jpeg',
   '/images/LOGIN/2.jpeg',
@@ -36,7 +38,7 @@ export function LoginPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % CAROUSEL_IMAGES.length)
-    }, 6000)
+    }, CAROUSEL_INTERVAL_MS)
     return () => clearInterval(interval)
   }, [])
 

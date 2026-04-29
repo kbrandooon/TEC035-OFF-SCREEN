@@ -98,7 +98,7 @@ export function DashboardLayout({
         | undefined
       if (!tenantId) return
 
-      const [tenantResult, profileResult] = await Promise.all([
+      const [tenantResult, profileResult] = await Promise.allSettled([
         supabase.from('tenants').select('name').limit(1).maybeSingle(),
         supabase
           .from('profiles')
@@ -107,13 +107,13 @@ export function DashboardLayout({
           .maybeSingle(),
       ])
 
-      if (tenantResult.data?.name) {
-        layoutCache.tenantName = tenantResult.data.name
-        setTenantName(tenantResult.data.name)
+      if (tenantResult.status === 'fulfilled' && tenantResult.value.data?.name) {
+        layoutCache.tenantName = tenantResult.value.data.name
+        setTenantName(tenantResult.value.data.name)
       }
 
-      if (profileResult.data) {
-        const { first_name, last_name } = profileResult.data
+      if (profileResult.status === 'fulfilled' && profileResult.value.data) {
+        const { first_name, last_name } = profileResult.value.data
         const name = [first_name, last_name].filter(Boolean).join(' ')
         const resolved = name || user.email?.split('@')[0] || ''
         layoutCache.fullName = resolved
