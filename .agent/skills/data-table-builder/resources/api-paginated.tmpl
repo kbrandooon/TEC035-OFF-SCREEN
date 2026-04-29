@@ -1,0 +1,39 @@
+import { supabase } from '@/supabase/client'
+import type { {{ROW_TYPE}} } from '../types/{{FEATURE_LOWER}}.types'
+
+/**
+ * Fetches a paginated slice of {{FEATURE_LOWER}} from `{{VIEW_NAME}}`.
+ * Selects only necessary columns and returns the total record count.
+ *
+ * @param page     - Current page index (0-indexed).
+ * @param pageSize - Number of records to return per page.
+ * @param search   - Optional search string for name filtering.
+ * @returns        A promise resolving to { rows, total }.
+ */
+export async function get{{FEATURE_NAME_CAPITALIZED}}(
+  page: number,
+  pageSize: number,
+  search = ''
+): Promise<{ rows: {{ROW_TYPE}}[]; total: number }> {
+  const from = page * pageSize
+  const to = from + pageSize - 1
+
+  let query = supabase
+    .from('{{VIEW_NAME}}')
+    .select('{{COLUMNS}}', { count: 'exact' })
+    .order('{{ORDER_BY}}', { ascending: true })
+    .range(from, to)
+
+  if (search.trim()) {
+    query = query.ilike('{{SEARCH_COLUMN}}', `%${search.trim()}%`)
+  }
+
+  const { data, error, count } = await query
+
+  if (error) throw new Error(error.message)
+
+  return {
+    rows: (data ?? []) as {{ROW_TYPE}}[],
+    total: count ?? 0,
+  }
+}

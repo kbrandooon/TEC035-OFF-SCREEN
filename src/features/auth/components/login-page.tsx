@@ -15,7 +15,7 @@ const CAROUSEL_IMAGES = [
 /**
  * LoginPage Component
  *
- * Renders the initial authentication view for the OFF SCREEN admin panel.
+ * Renders the initial authentication view for the StudioOS admin panel.
  * Follows the provided visual design, utilizing Tailwind CSS for styling.
  *
  * @returns {React.ReactElement} The login page UI
@@ -116,7 +116,7 @@ export function LoginPage() {
                       name='email'
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder='admin@offscreen.com'
+                      placeholder='admin@studioos.com'
                       required
                       type='email'
                       disabled={isLoading}
@@ -232,7 +232,7 @@ export function LoginPage() {
             </p>
 
             <p className='mt-4 text-center text-xs text-slate-400'>
-              © 2026 OFF SCREEN. <br />
+              © 2026 StudioOS. <br />
             </p>
           </div>
         </div>

@@ -28,7 +28,7 @@ const layoutCache: { tenantName: string; fullName: string } = {
 }
 
 /**
- * Layout principal del Dashboard Administrativo de Off Screen.
+ * Layout principal del Dashboard Administrativo de StudioOs
  *
  * Gestiona la carga del tenant activo, el nombre del perfil del usuario,
  * el sidebar de navegación, el header y el modal de creación de nuevo estudio.
@@ -468,7 +468,7 @@ export function DashboardLayout({
                   onChange={(e) => setStudioName(e.target.value)}
                   disabled={isCreating}
                   className='block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-slate-500 focus:ring-1 focus:ring-slate-500 focus:outline-none disabled:opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-slate-500'
-                  placeholder='Ej. Off Screen Pro'
+                  placeholder='Ej. StudioOS'
                 />
               </div>
 

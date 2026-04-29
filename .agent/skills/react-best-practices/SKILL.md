@@ -314,30 +314,33 @@ Popular icon and component libraries can have **up to 10,000 re-exports** in the
 **Incorrect: imports entire library**
 
 ```tsx
-import { Check, X, Menu } from 'lucide-react'
 // Loads 1,583 modules, takes ~2.8s extra in dev
 // Runtime cost: 200-800ms on every cold start
-
 import { Button, TextField } from '@mui/material'
+import { Check, X, Menu } from 'lucide-react'
+
 // Loads 2,225 modules, takes ~4.2s extra in dev
 ```
 
 **Correct: imports only what you need**
 
 ```tsx
-import Check from 'lucide-react/dist/esm/icons/check'
-import X from 'lucide-react/dist/esm/icons/x'
-import Menu from 'lucide-react/dist/esm/icons/menu'
 // Loads only 3 modules (~2KB vs ~1MB)
-
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
+import Check from 'lucide-react/dist/esm/icons/check'
+import Menu from 'lucide-react/dist/esm/icons/menu'
+import X from 'lucide-react/dist/esm/icons/x'
+
 // Loads only what you use
 ```
 
 **Alternative: Next.js 13.5+**
 
 ```js
+// Then you can keep the ergonomic barrel imports:
+import { Check, X, Menu } from 'lucide-react'
+
 // next.config.js - use optimizePackageImports
 module.exports = {
   experimental: {
@@ -345,8 +348,6 @@ module.exports = {
   },
 }
 
-// Then you can keep the ergonomic barrel imports:
-import { Check, X, Menu } from 'lucide-react'
 // Automatically transformed to direct imports at build time
 ```
 
@@ -419,7 +420,7 @@ import dynamic from 'next/dynamic'
 
 const Analytics = dynamic(
   () => import('@vercel/analytics/react').then((m) => m.Analytics),
-  { ssr: false },
+  { ssr: false }
 )
 
 export default function RootLayout({ children }) {
@@ -457,7 +458,7 @@ import dynamic from 'next/dynamic'
 
 const MonacoEditor = dynamic(
   () => import('./monaco-editor').then((m) => m.MonacoEditor),
-  { ssr: false },
+  { ssr: false }
 )
 
 function CodePanel({ code }: { code: string }) {
@@ -564,8 +565,8 @@ export async function deleteUser(userId: string) {
 ```typescript
 'use server'
 
-import { verifySession } from '@/lib/auth'
 import { z } from 'zod'
+import { verifySession } from '@/lib/auth'
 
 const updateProfileSchema = z.object({
   userId: z.string().uuid(),
@@ -909,9 +910,9 @@ export async function POST(request: Request) {
 **Correct: non-blocking**
 
 ```tsx
-import { after } from 'next/server'
-import { headers, cookies } from 'next/headers'
 import { logUserAction } from '@/app/utils'
+import { headers, cookies } from 'next/headers'
+import { after } from 'next/server'
 
 export async function POST(request: Request) {
   // Perform mutation
@@ -1193,7 +1194,7 @@ function cachePrefs(user: FullUser) {
       JSON.stringify({
         theme: user.preferences.theme,
         notifications: user.preferences.notifications,
-      }),
+      })
     )
   } catch {}
 }
@@ -1510,7 +1511,7 @@ function TodoList() {
     (newItems: Item[]) => {
       setItems([...items, ...newItems])
     },
-    [items],
+    [items]
   ) // ❌ items dependency causes recreations
 
   // Risk of stale closure if dependency is forgotten
@@ -1595,7 +1596,7 @@ function FilteredList({ items }: { items: Item[] }) {
 function UserProfile() {
   // JSON.parse runs on every render
   const [settings, setSettings] = useState(
-    JSON.parse(localStorage.getItem('settings') || '{}'),
+    JSON.parse(localStorage.getItem('settings') || '{}')
   )
 
   return <SettingsForm settings={settings} onChange={setSettings} />
@@ -1752,8 +1753,8 @@ Many browsers don't have hardware acceleration for CSS3 animations on SVG elemen
 ```tsx
 function LoadingSpinner() {
   return (
-    <svg className="animate-spin" width="24" height="24" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" />
+    <svg className='animate-spin' width='24' height='24' viewBox='0 0 24 24'>
+      <circle cx='12' cy='12' r='10' stroke='currentColor' />
     </svg>
   )
 }
@@ -1764,9 +1765,9 @@ function LoadingSpinner() {
 ```tsx
 function LoadingSpinner() {
   return (
-    <div className="animate-spin">
-      <svg width="24" height="24" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10" stroke="currentColor" />
+    <div className='animate-spin'>
+      <svg width='24' height='24' viewBox='0 0 24 24'>
+        <circle cx='12' cy='12' r='10' stroke='currentColor' />
       </svg>
     </div>
   )
@@ -1795,9 +1796,9 @@ Apply `content-visibility: auto` to defer off-screen rendering.
 ```tsx
 function MessageList({ messages }: { messages: Message[] }) {
   return (
-    <div className="overflow-y-auto h-screen">
+    <div className='h-screen overflow-y-auto'>
       {messages.map((msg) => (
-        <div key={msg.id} className="message-item">
+        <div key={msg.id} className='message-item'>
           <Avatar user={msg.author} />
           <div>{msg.content}</div>
         </div>
@@ -1819,7 +1820,7 @@ Extract static JSX outside components to avoid re-creation.
 
 ```tsx
 function LoadingSkeleton() {
-  return <div className="animate-pulse h-20 bg-gray-200" />
+  return <div className='h-20 animate-pulse bg-gray-200' />
 }
 
 function Container() {
@@ -1830,7 +1831,7 @@ function Container() {
 **Correct: reuses same element**
 
 ```tsx
-const loadingSkeleton = <div className="animate-pulse h-20 bg-gray-200" />
+const loadingSkeleton = <div className='h-20 animate-pulse bg-gray-200' />
 
 function Container() {
   return <div>{loading && loadingSkeleton}</div>
@@ -1910,7 +1911,7 @@ Component first renders with default value (`light`), then updates after hydrati
 function ThemeWrapper({ children }: { children: ReactNode }) {
   return (
     <>
-      <div id="theme-wrapper">{children}</div>
+      <div id='theme-wrapper'>{children}</div>
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -1987,7 +1988,7 @@ Use explicit ternary operators (`? :`) instead of `&&` for conditional rendering
 
 ```tsx
 function Badge({ count }: { count: number }) {
-  return <div>{count && <span className="badge">{count}</span>}</div>
+  return <div>{count && <span className='badge'>{count}</span>}</div>
 }
 
 // When count = 0, renders: <div>0</div>
@@ -1998,7 +1999,7 @@ function Badge({ count }: { count: number }) {
 
 ```tsx
 function Badge({ count }: { count: number }) {
-  return <div>{count > 0 ? <span className="badge">{count}</span> : null}</div>
+  return <div>{count > 0 ? <span className='badge'>{count}</span> : null}</div>
 }
 
 // When count = 0, renders: <div></div>
@@ -2348,7 +2349,7 @@ let cookieCache: Record<string, string> | null = null
 function getCookie(name: string) {
   if (!cookieCache) {
     cookieCache = Object.fromEntries(
-      document.cookie.split('; ').map((c) => c.split('=')),
+      document.cookie.split('; ').map((c) => c.split('='))
     )
   }
   return cookieCache[name]

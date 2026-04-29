@@ -187,12 +187,11 @@ const { name, email } = user
 
 ```typescript
 // ❌ Bad
-import * as utils from './utils'
 import _ from 'lodash'
-
+import { debounce } from 'lodash-es'
+import * as utils from './utils'
 // ✅ Good
 import { formatDate, calculateTotal } from './utils'
-import { debounce } from 'lodash-es'
 ```
 
 ### Database (Supabase)

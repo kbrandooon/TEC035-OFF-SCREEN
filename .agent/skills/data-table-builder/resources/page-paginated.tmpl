@@ -1,0 +1,129 @@
+import { useState, useCallback } from 'react'
+import { useSearch } from '@/contexts/search-context'
+import { motion } from 'framer-motion'
+import {
+  DataTable,
+  DataTableColumnHeader,
+  createColumnHelper,
+} from '@/components/ui/data-table'
+import { use{{FEATURE_NAME_CAPITALIZED}}, PAGE_SIZE } from '../hooks/use-{{FEATURE_LOWER}}'
+import type { {{ROW_TYPE}}, {{FEATURE_NAME_CAPITALIZED}}Filter } from '../types/{{FEATURE_LOWER}}.types'
+import { getAll{{FEATURE_NAME_CAPITALIZED}} } from '../api/get-all-{{FEATURE_LOWER}}'
+// import { {{FEATURE_NAME_CAPITALIZED}}FilterBar } from './{{FEATURE_LOWER}}-filter-bar'
+
+// ─── Column definitions ───────────────────────────────────────────────────────
+
+const helper = createColumnHelper<{{ROW_TYPE}}>()
+
+const columns = [
+  helper.accessor('{{NAME_COLUMN}}', {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Nombre' />
+    ),
+    cell: (info) => info.getValue() ?? '—',
+    meta: { label: 'Nombre' },
+  }),
+  // ... add more columns here
+]
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+/**
+ * {{FEATURE_NAME_CAPITALIZED}}Page — full-width layout with a searchable `DataTable` backed
+ * by `{{VIEW_NAME}}`.
+ *
+ * @returns A React component representing the {{FEATURE_LOWER}} dashboard.
+ */
+export function {{FEATURE_NAME_CAPITALIZED}}Page() {
+  const [page, setPage] = useState(0)
+  // const [filter, setFilter] = useState<{{FEATURE_NAME_CAPITALIZED}}Filter>(DEFAULT_FILTER_VALUE)
+  // const [showAddDrawer, setShowAddDrawer] = useState(false)
+  // const [selectedItem, setSelectedItem] = useState<{{ROW_TYPE}} | null>(null)
+
+  // Driven by the global header search bar via SearchContext
+  const { query: searchQuery } = useSearch()
+
+  // const handleFilterChange = useCallback((newFilter: {{FEATURE_NAME_CAPITALIZED}}Filter) => {
+  //   setFilter(newFilter)
+  //   setPage(0) // reset page when filters change
+  // }, [])
+
+  const { data, isLoading, isFetching, isError } = use{{FEATURE_NAME_CAPITALIZED}}(page, searchQuery /*, filter */)
+
+  const rows = data?.rows ?? []
+  const total = data?.total ?? 0
+
+  return (
+    <motion.div
+      className='flex h-full flex-col overflow-hidden p-6'
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
+      {/* Page header */}
+      <div className='mb-4 flex items-end justify-between'>
+        <div>
+          <h1 className='text-lg font-bold text-gray-900'>{{TITLE}}</h1>
+          <p className='mt-0.5 text-sm text-gray-400'>
+            {{DESCRIPTION}}
+          </p>
+        </div>
+        {/*
+        <button
+          onClick={() => setShowAddDrawer(true)}
+          className='flex h-9 shrink-0 items-center justify-center rounded-lg bg-amber-500 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-amber-600 focus:ring-2 focus:ring-amber-400 focus:ring-offset-1 focus:outline-none'
+        >
+          Agregar
+        </button>
+        */}
+      </div>
+
+      {/* Main content */}
+      <div className='flex flex-1 flex-col overflow-hidden'>
+        {isError && (
+          <div className='rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600'>
+            Error al cargar los datos. Intenta nuevamente.
+          </div>
+        )}
+
+        {/* 
+        <div className='mb-4'>
+          <{{FEATURE_NAME_CAPITALIZED}}FilterBar filter={filter} onFilterChange={handleFilterChange} />
+        </div>
+        */}
+
+        {isLoading ? (
+          <div className='flex flex-col gap-2'>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className='h-9 w-full animate-pulse rounded-md bg-gray-100'
+                style={{ opacity: 1 - i * 0.1 }}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className='flex min-h-0 flex-1 flex-col'>
+            <DataTable<{{ROW_TYPE}}>
+              data={rows}
+              columns={columns}
+              draggable={false}
+              exportConfig={{
+                filename: '{{FILENAME}}',
+                onFetchAll: () => getAll{{FEATURE_NAME_CAPITALIZED}}(searchQuery /*, filter */),
+              }}
+              // onRowClick={(row) => setSelectedItem(row)}
+              className='min-h-0 flex-1'
+              page={page}
+              total={total}
+              pageSize={PAGE_SIZE}
+              isFetching={isFetching}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+

@@ -1,0 +1,26 @@
+import { supabase } from '@/supabase/client'
+import type { {{ROW_TYPE}} } from '../types/{{FEATURE_LOWER}}.types'
+
+/**
+ * Fetches all matching {{FEATURE_LOWER}} from `{{VIEW_NAME}}` (non-paginated).
+ * Used primarily for Excel/CSV exports where the entire result set is needed.
+ *
+ * @param search - Optional search string for ilike name filtering.
+ * @returns       A promise resolving to an array of all matching {{ROW_TYPE}} records.
+ */
+export async function getAll{{FEATURE_NAME_CAPITALIZED}}(search = ''): Promise<{{ROW_TYPE}}[]> {
+  let query = supabase
+    .from('{{VIEW_NAME}}')
+    .select('{{COLUMNS}}')
+    .order('{{ORDER_BY}}', { ascending: true })
+
+  if (search.trim()) {
+    query = query.ilike('{{SEARCH_COLUMN}}', `%${search.trim()}%`)
+  }
+
+  const { data, error } = await query
+
+  if (error) throw new Error(error.message)
+
+  return (data ?? []) as {{ROW_TYPE}}[]
+}

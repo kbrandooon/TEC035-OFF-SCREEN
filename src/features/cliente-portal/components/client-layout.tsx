@@ -43,7 +43,7 @@ function ClientNavbar() {
             </span>
           </div>
           <span className='text-base font-bold tracking-tight text-slate-900'>
-            Off Screen
+            StudioOS
           </span>
         </Link>
 

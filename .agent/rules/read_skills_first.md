@@ -2,6 +2,19 @@
 trigger: always_on
 ---
 
+---
+
+## trigger: always_on
+
+# Agent Workflow (Reasoning Steps)
+
+Before generating code, follow this process:
+
+1.  **Analyze Intent:** Does this request belong to an existing feature, a new feature, or is it a shared utility?
+2.  **Check Structure:** If creating a file, verify the path against the `src/features` vs `src/components` rule.
+3.  **Safety Check:** If writing a Supabase query, did I explicit select columns? If writing a component, did I destructure props and add guard clauses?
+4.  **Generate:** Write the code adhering to the formatting rules.
+
 # Strict Skill-Reading Requirement
 
 To ensure the highest quality of code and adherence to project standards, the agent MUST strictly follow this rule:

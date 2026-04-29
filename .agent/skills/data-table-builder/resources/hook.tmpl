@@ -1,0 +1,30 @@
+import { useQuery } from '@tanstack/react-query'
+import { get{{FEATURE_NAME_CAPITALIZED}} } from '../api/get-{{FEATURE_LOWER}}'
+
+// Standard page size for the {{FEATURE_LOWER}} feature
+export const PAGE_SIZE = 20
+
+// ─── Query keys ───────────────────────────────────────────────────────────────
+
+const keys = {
+  all: (page: number, search: string) =>
+    ['{{FEATURE_LOWER}}', 'list', page, search] as const,
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Fetches a paginated list of {{FEATURE_LOWER}} from `{{VIEW_NAME}}`.
+ * Automatically refetches when page or search query changes.
+ *
+ * @param page   - Current page index (0-indexed).
+ * @param search - Optional search string for filtering.
+ * @returns      TanStack Query result with { rows, total }.
+ */
+export function use{{FEATURE_NAME_CAPITALIZED}}(page: number, search = '') {
+  return useQuery({
+    queryKey: keys.all(page, search),
+    queryFn: () => get{{FEATURE_NAME_CAPITALIZED}}(page, PAGE_SIZE, search),
+    staleTime: 1000 * 60 * 5,
+  })
+}
