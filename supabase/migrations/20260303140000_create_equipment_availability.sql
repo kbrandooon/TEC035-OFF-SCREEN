@@ -40,7 +40,10 @@ as
   from public.reservations r,
        jsonb_array_elements(r.equipment_items) as item
   where r.status in ('pending', 'confirmed')
-    -- Guard: skip rows where equipment_items is null or empty
+    -- Guard: skip rows where equipment_items is not a JSON array or is empty.
+    -- jsonb_typeof check must come first to prevent 22023 ("cannot get array
+    -- length of a scalar") when the column holds a non-array JSON value.
+    and jsonb_typeof(r.equipment_items) = 'array'
     and jsonb_array_length(r.equipment_items) > 0;
 
 grant select on public.v_equipment_reservations to authenticated;
