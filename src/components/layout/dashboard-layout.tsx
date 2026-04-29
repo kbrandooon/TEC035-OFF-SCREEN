@@ -199,10 +199,70 @@ export function DashboardLayout({
               </span>
               <span className='text-sm font-medium'>Reservas</span>
             </a>
-            <Link to='/equipo' className={navLinkClass('/equipo')}>
-              <span className={navIconClass('/equipo')}>videocam</span>
-              <span className='text-sm font-medium'>Equipo</span>
-            </Link>
+            {/* Equipo — collapsible group */}
+            {(() => {
+              const isEquipoActive = location.pathname.startsWith('/equipo')
+              return (
+                <div>
+                  <Link
+                    to='/equipo'
+                    className={
+                      isEquipoActive
+                        ? 'bg-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold text-white shadow-md transition-colors dark:text-white'
+                        : 'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white'
+                    }
+                  >
+                    <span
+                      className={
+                        isEquipoActive
+                          ? 'material-symbols-outlined fill-current text-[22px] font-normal'
+                          : 'material-symbols-outlined text-[22px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'
+                      }
+                    >
+                      videocam
+                    </span>
+                    <span className='flex-1 text-sm font-medium'>Equipo</span>
+                    <span className='material-symbols-outlined text-[16px] font-normal opacity-60'>
+                      {isEquipoActive ? 'expand_less' : 'expand_more'}
+                    </span>
+                  </Link>
+
+                  {isEquipoActive && (
+                    <div className='mt-1 ml-3 flex flex-col gap-0.5 border-l border-slate-200 pl-4 dark:border-slate-700'>
+                      <Link
+                        to='/equipo'
+                        className={[
+                          'group flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-colors',
+                          location.pathname === '/equipo' ||
+                          location.pathname === '/equipo/'
+                            ? 'bg-slate-100 font-semibold text-slate-900 dark:bg-slate-700 dark:text-white'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white',
+                        ].join(' ')}
+                      >
+                        <span className='material-symbols-outlined text-[18px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
+                          inventory_2
+                        </span>
+                        <span className='font-medium'>Stock</span>
+                      </Link>
+                      <Link
+                        to='/equipo/disponibilidad'
+                        className={[
+                          'group flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-colors',
+                          location.pathname === '/equipo/disponibilidad'
+                            ? 'bg-slate-100 font-semibold text-slate-900 dark:bg-slate-700 dark:text-white'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white',
+                        ].join(' ')}
+                      >
+                        <span className='material-symbols-outlined text-[18px] font-normal text-slate-400 transition-colors group-hover:text-slate-800 dark:group-hover:text-white'>
+                          event_available
+                        </span>
+                        <span className='font-medium'>Disponibilidad</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
             <Link to='/clientes' className={navLinkClass('/clientes')}>
               <span className={navIconClass('/clientes')}>group</span>
               <span className='text-sm font-medium'>Clientes</span>

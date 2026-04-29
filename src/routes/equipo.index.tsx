@@ -59,8 +59,8 @@ const TYPE_OPTIONS: { value: EquipmentType | null; label: string }[] = [
 ]
 
 /**
- * Equipment list page — server-side paginated with text search, type filter, and status tabs.
- * Clicking a card opens the detail modal overlay.
+ * Equipment Stock page (/equipo) — server-side paginated list with text search,
+ * type filter, and status tabs. Clicking a card opens the detail modal overlay.
  */
 function EquipoPage() {
   const { user, isLoading: isAuthLoading } = useAuth()
@@ -131,11 +131,10 @@ function EquipoPage() {
 
   return (
     <DashboardLayout>
-      {/* Page header */}
       <div className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
         <div>
           <h3 className='text-2xl font-bold tracking-tight text-slate-800 dark:text-white'>
-            Equipo
+            Stock de Equipo
           </h3>
           <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>
             Gestiona el inventario de equipo de tu estudio.

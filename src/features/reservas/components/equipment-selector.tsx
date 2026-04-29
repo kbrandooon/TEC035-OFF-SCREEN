@@ -1,5 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import type { Equipment } from '@/features/equipo'
+import {
+  getEquipmentAvailability,
+  type EquipmentAvailabilityResult,
+} from '@/features/equipo-disponibilidad'
 import type { ReservationEquipmentItem } from '../types'
 
 interface EquipmentSelectorProps {
@@ -7,6 +12,10 @@ interface EquipmentSelectorProps {
   selectedItems: ReservationEquipmentItem[]
   onChange: (items: ReservationEquipmentItem[]) => void
   disabled?: boolean
+  /** ISO 8601 datetime for the start of the reservation window (e.g. "2026-03-03T09:00"). */
+  reservationStart?: string
+  /** ISO 8601 datetime for the end of the reservation window (e.g. "2026-03-03T13:00"). */
+  reservationEnd?: string
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -35,19 +44,50 @@ const TYPE_ICONS: Record<string, string> = {
  * Cart-style equipment picker.
  * A "Agregar Equipo" button opens an overlay panel with all available items.
  * Each item can be added/removed from the cart, with a quantity stepper.
- * Selected items are shown as cards with image, name, rate, and quantity controls.
+ *
+ * When `reservationStart` and `reservationEnd` are provided the overlay
+ * queries the `get_equipment_availability` RPC and shows live availability
+ * badges: "X disponible" (green) or "Agotado" (red) on each card.
  */
 export function EquipmentSelector({
   availableEquipment,
   selectedItems,
   onChange,
   disabled = false,
+  reservationStart,
+  reservationEnd,
 }: EquipmentSelectorProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [activeType, setActiveType] = useState<string | null>(null)
 
   const selectedIds = new Set(selectedItems.map((i) => i.equipmentId))
+
+  // ── Availability query (only when we have a full date+time window) ──────────
+  const canQueryAvailability = Boolean(reservationStart && reservationEnd)
+
+  const { data: availabilityData = [] } = useQuery({
+    queryKey: [
+      'equipment-availability-inline',
+      reservationStart,
+      reservationEnd,
+    ],
+    queryFn: () => getEquipmentAvailability(reservationStart!, reservationEnd!),
+    enabled: isOpen && canQueryAvailability,
+    staleTime: 30_000,
+  })
+
+  /** Map of equipment_id → available count for O(1) lookups in the render loop. */
+  const availabilityMap = useMemo<Map<string, number>>(
+    () =>
+      new Map(
+        availabilityData.map((r: EquipmentAvailabilityResult) => [
+          r.id,
+          r.available,
+        ])
+      ),
+    [availabilityData]
+  )
 
   // ── Filtered catalog ──────────────────────────────────────────────────────
   const filtered = availableEquipment.filter((e) => {
@@ -93,13 +133,20 @@ export function EquipmentSelector({
       <button
         type='button'
         onClick={() => setIsOpen(true)}
-        disabled={disabled}
-        className='flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 py-3 text-sm font-semibold text-slate-500 transition-all hover:border-[#2d3748]/50 hover:bg-white hover:text-[#2d3748] disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800/40 dark:hover:border-slate-400'
+        disabled={disabled || !canQueryAvailability}
+        title={
+          !canQueryAvailability
+            ? 'Selecciona fecha y hora antes de agregar equipo'
+            : undefined
+        }
+        className='flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 py-3 text-sm font-semibold text-slate-500 transition-all hover:border-[#2d3748]/50 hover:bg-white hover:text-[#2d3748] disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800/40 dark:hover:border-slate-400'
       >
         <span className='material-symbols-outlined text-[18px] font-normal'>
           add_shopping_cart
         </span>
-        Agregar Equipo al Carrito
+        {!canQueryAvailability
+          ? 'Selecciona fecha y hora primero'
+          : 'Agregar Equipo al Carrito'}
         {selectedItems.length > 0 && (
           <span className='ml-1 rounded-full bg-[#2d3748] px-2 py-0.5 text-[11px] font-bold text-white'>
             {selectedItems.length}
@@ -158,7 +205,12 @@ export function EquipmentSelector({
                 <button
                   type='button'
                   onClick={() => updateQty(item.equipmentId, item.quantity + 1)}
-                  disabled={disabled}
+                  disabled={
+                    disabled ||
+                    (availabilityMap.has(item.equipmentId) &&
+                      item.quantity >=
+                        (availabilityMap.get(item.equipmentId) ?? Infinity))
+                  }
                   className='flex size-6 items-center justify-center rounded border border-slate-300 text-slate-500 hover:bg-slate-100 disabled:opacity-40 dark:border-slate-600'
                 >
                   <span className='material-symbols-outlined text-[14px] font-normal'>
@@ -207,6 +259,7 @@ export function EquipmentSelector({
                 </div>
               </div>
               <button
+                type='button'
                 onClick={() => setIsOpen(false)}
                 className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
               >
@@ -233,6 +286,7 @@ export function EquipmentSelector({
               {/* Type filter chips */}
               <div className='flex flex-wrap gap-2'>
                 <button
+                  type='button'
                   onClick={() => setActiveType(null)}
                   className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${!activeType ? 'bg-[#2d3748] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300'}`}
                 >
@@ -241,6 +295,7 @@ export function EquipmentSelector({
                 {presentTypes.map((t) => (
                   <button
                     key={t}
+                    type='button'
                     onClick={() => setActiveType(activeType === t ? null : t)}
                     className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${activeType === t ? 'bg-[#2d3748] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300'}`}
                   >
@@ -266,18 +321,60 @@ export function EquipmentSelector({
                 <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
                   {filtered.map((equip) => {
                     const inCart = selectedIds.has(equip.id)
+                    const availableUnits = availabilityMap.get(equip.id)
+
+                    // Block if equipment status is not 'disponible'
+                    const isNotDisponible = equip.status !== 'disponible'
+
+                    // Block if time-based availability is 0 (and not already in cart)
+                    const isFullyBooked =
+                      !isNotDisponible &&
+                      canQueryAvailability &&
+                      availableUnits !== undefined &&
+                      availableUnits === 0 &&
+                      !inCart
+
+                    const isBlocked = isNotDisponible || isFullyBooked
+
+                    // Human-readable label for non-disponible status
+                    const STATUS_LABELS: Record<
+                      string,
+                      { label: string; icon: string; cls: string }
+                    > = {
+                      mantenimiento: {
+                        label: 'Mantenimiento',
+                        icon: 'build',
+                        cls: 'bg-amber-500 text-white',
+                      },
+                      no_disponible: {
+                        label: 'No disponible',
+                        icon: 'cancel',
+                        cls: 'bg-slate-500 text-white',
+                      },
+                    }
+                    const statusMeta = STATUS_LABELS[equip.status]
+
                     return (
                       <button
                         key={equip.id}
                         type='button'
                         onClick={() =>
-                          inCart ? removeItem(equip.id) : addItem(equip)
+                          isBlocked
+                            ? undefined
+                            : inCart
+                              ? removeItem(equip.id)
+                              : addItem(equip)
                         }
+                        disabled={isBlocked}
                         className={[
-                          'group relative flex flex-col overflow-hidden rounded-xl border text-left transition-all',
+                          'group relative flex flex-col overflow-hidden rounded-xl border text-left transition-all disabled:cursor-not-allowed',
                           inCart
                             ? 'border-[#2d3748]/60 bg-[#2d3748]/5 ring-1 ring-[#2d3748]/30 dark:border-slate-500'
-                            : 'border-slate-200 bg-white hover:border-slate-400 dark:border-slate-700 dark:bg-slate-800/60',
+                            : isNotDisponible
+                              ? 'border-slate-300 bg-slate-100 opacity-60 dark:border-slate-700 dark:bg-slate-800/30'
+                              : isFullyBooked
+                                ? 'border-red-200 bg-red-50 opacity-60 dark:border-red-900/40 dark:bg-red-900/10'
+                                : 'border-slate-200 bg-white hover:border-slate-400 dark:border-slate-700 dark:bg-slate-800/60',
                         ].join(' ')}
                       >
                         {/* Image */}
@@ -311,6 +408,44 @@ export function EquipmentSelector({
                             {TYPE_LABELS[equip.type] ?? equip.type}
                           </span>
                         </div>
+
+                        {/* ── Non-disponible status badge (top-left) ──────── */}
+                        {isNotDisponible && statusMeta && (
+                          <div
+                            className={`absolute top-2 left-2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold shadow ${statusMeta.cls}`}
+                          >
+                            <span className='material-symbols-outlined text-[10px] font-normal'>
+                              {statusMeta.icon}
+                            </span>
+                            {statusMeta.label}
+                          </div>
+                        )}
+
+                        {/* ── Time-based availability badge (top-left) ────── */}
+                        {!isNotDisponible &&
+                          canQueryAvailability &&
+                          availableUnits !== undefined && (
+                            <div
+                              className={[
+                                'absolute top-2 left-2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold shadow',
+                                availableUnits === 0
+                                  ? 'bg-red-500 text-white'
+                                  : availableUnits <= 2
+                                    ? 'bg-amber-400 text-white'
+                                    : 'bg-emerald-500 text-white',
+                              ].join(' ')}
+                            >
+                              <span className='material-symbols-outlined text-[10px] font-normal'>
+                                {availableUnits === 0
+                                  ? 'block'
+                                  : 'check_circle'}
+                              </span>
+                              {availableUnits === 0
+                                ? 'Agotado'
+                                : `${availableUnits} disp.`}
+                            </div>
+                          )}
+
                         {/* Cart badge overlay */}
                         {inCart && (
                           <div className='absolute top-2 right-2 flex size-6 items-center justify-center rounded-full bg-[#2d3748] text-white shadow'>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { supabase } from '@/supabase/client'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
-import { signOut, useAuth } from '@/features/auth'
+import { signOut, useAuth, ClientProfileModal } from '@/features/auth'
 import { useEquipmentStats } from '@/features/equipo'
 import {
   ReservationFormModal,
@@ -667,7 +667,50 @@ function DashboardPage() {
 
   const jwtClaims = session?.user?.app_metadata || {}
 
+  const userRole = user?.user_metadata?.role as string | undefined
+
+  // ── Client profile check ─────────────────────────────────────────────────────
+  const [hasClientProfile, setHasClientProfile] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    if (userRole !== 'cliente' || !user) return
+
+    supabase
+      .from('client_profiles')
+      .select('id')
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        setHasClientProfile(!!data)
+      })
+  }, [userRole, user])
+
+  // Redirect clients with complete profile to the client portal
+  useEffect(() => {
+    if (userRole === 'cliente' && hasClientProfile === true) {
+      void navigate({ to: '/cliente' })
+    }
+  }, [userRole, hasClientProfile, navigate])
+
   if (isLoading || !user) return null
+
+  // ── Cliente guard — clientes never have a tenant_id ─────────────────────────
+  if (userRole === 'cliente') {
+    // Still loading whether they have a profile
+    if (hasClientProfile === null) return null
+
+    // No profile yet → collect their info then redirect
+    if (!hasClientProfile) {
+      return (
+        <div className='font-display flex min-h-screen items-center justify-center bg-slate-50'>
+          <ClientProfileModal email={user.email ?? ''} />
+        </div>
+      )
+    }
+
+    // Profile complete — redirect effect above handles navigation
+    return null
+  }
 
   // ── Onboarding ──────────────────────────────────────────────────────────────
   if (!jwtClaims.tenant_id) {
