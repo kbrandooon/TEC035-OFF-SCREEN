@@ -4,6 +4,7 @@ import { useEquipment } from '@/features/equipo'
 import type { Reservation, ReservationFormValues } from '../types'
 import { EquipmentSelector } from './equipment-selector'
 import { ReservationPreview } from './reservation-preview'
+import { toDatabaseTimestamp } from '@/utils/date-utils'
 
 interface ReservationFormModalProps {
   isOpen: boolean
@@ -279,12 +280,12 @@ export function ReservationFormModal({
                   disabled={isSaving}
                   reservationStart={
                     values.date && values.startTime
-                      ? `${values.date}T${values.startTime}`
+                      ? toDatabaseTimestamp(values.date, values.startTime)
                       : undefined
                   }
                   reservationEnd={
                     values.endDate && values.endTime
-                      ? `${values.endDate}T${values.endTime}`
+                      ? toDatabaseTimestamp(values.endDate, values.endTime)
                       : undefined
                   }
                 />

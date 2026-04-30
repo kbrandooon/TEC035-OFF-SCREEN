@@ -122,7 +122,7 @@ export function generateReservationHTML(values: ReservationFormValues): string {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserva — Off Screen Studio</title>
+  <title>Reserva —  StudioOS</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -237,10 +237,10 @@ export function generateReservationHTML(values: ReservationFormValues): string {
       <div>
         <div class="brand-row">
           <span>🎬</span>
-          <span class="brand-name">Off Screen</span>
+          <span class="brand-name">StudioOS</span>
           <span class="brand-light">Studio</span>
         </div>
-        <p class="brand-sub">estudio@offscreen.mx</p>
+        <p class="brand-sub">estudio@studioos.mx</p>
         <p class="brand-sub">Guadalajara, Jalisco · MX</p>
       </div>
       <div>
@@ -317,7 +317,7 @@ export function generateReservationHTML(values: ReservationFormValues): string {
 
     <!-- FOOTER -->
     <div class="footer">
-      <p class="footer-txt">Off Screen Studio · Orden de Reservación</p>
+      <p class="footer-txt">StudioOS · Orden de Reservación</p>
     </div>
 
   </div>

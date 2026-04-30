@@ -190,6 +190,10 @@ export function DashboardLayout({
               <span className={navIconClass('/dashboard')}>dashboard</span>
               <span className='text-sm font-medium'>Panel General</span>
             </Link>
+            <Link to='/dashboard/leads' className={navLinkClass('/dashboard/leads')}>
+              <span className={navIconClass('/dashboard/leads')}>record_voice_over</span>
+              <span className='text-sm font-medium'>Leads</span>
+            </Link>
             <a
               href='/dashboard#reservas'
               className={navLinkClass('/dashboard#reservas')}

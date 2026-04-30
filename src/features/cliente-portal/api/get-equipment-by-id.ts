@@ -22,6 +22,18 @@ export async function getEquipmentById(
   if (error) throw error
   if (!data) return null
 
+  const rawTenants = data.tenants as
+    | { name: string }
+    | { name: string }[]
+    | null
+    | undefined
+  let tenantName = 'Estudio desconocido'
+  if (rawTenants && !Array.isArray(rawTenants) && rawTenants.name) {
+    tenantName = rawTenants.name
+  } else if (Array.isArray(rawTenants) && rawTenants[0]?.name) {
+    tenantName = rawTenants[0].name
+  }
+
   return {
     id: data.id,
     name: data.name,
@@ -31,7 +43,6 @@ export async function getEquipmentById(
     status: data.status as MarketplaceEquipment['status'],
     image_url: data.image_url,
     tenant_id: data.tenant_id,
-    tenant_name:
-      (data.tenants as { name: string } | null)?.name ?? 'Estudio desconocido',
+    tenant_name: tenantName,
   }
 }

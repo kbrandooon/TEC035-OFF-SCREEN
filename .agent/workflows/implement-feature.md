@@ -7,13 +7,6 @@ description: Comprehensive workflow for implementing new features, covering data
 **Description:** Comprehensive workflow for implementing new features, focusing on strict architecture, frontend excellence, and "Memory Lock" documentation.
 **Trigger:** Execute this workflow immediately whenever a Feature is created or modified.
 
----
-
-## 🚫 Database Constraint
-
-**IMPORTANT:** The database (Local and Remote) will **NOT** be modified. All implementation must rely on existing Tables, Views, RPCs, and Schemas. No new migrations or schema changes are permitted.
-
----
 
 ## Phase 1: Context & Planning (Crucial)
 
@@ -95,17 +88,7 @@ src/features/{feature_name}/
 - [ ] **Exports:** Is the public API restricted via `index.ts`?
 - [ ] **Functionality:** Are API calls, database logic, and UI components thoroughly tested?
 
-### 5.2 Code Quality Commands
-
-Run the following suite. If anything breaks, resolve issues and re-run until all pass cleanly:
-
-1. `bun run lint`
-2. `bun run knip`
-3. `bun run format`
-4. `bun run build`
-
----
-
-## Phase 6: Documentation
-
-Follow .agent/skills/documentation/SKILL.md
+Ensure follow design patterns, colors, design.
+Ensure reuse components.
+All code files has to be a maximum of 150 code lines.
+All file names have to be in English.

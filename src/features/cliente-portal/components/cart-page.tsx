@@ -27,6 +27,15 @@ export function CartPage() {
             tenantId: item.equipment.tenant_id,
             startDate: item.startDate,
             endDate: item.endDate,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            equipmentItem: {
+              name: item.equipment.name,
+              quantity: 1,
+              image_url: item.equipment.image_url ?? '',
+              daily_rate: item.equipment.daily_rate,
+              equipmentId: item.equipment.id,
+            },
           })
         )
       )

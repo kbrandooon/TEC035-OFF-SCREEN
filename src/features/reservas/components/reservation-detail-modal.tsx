@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Reservation, ReservationStatus } from '../types'
 import { openReservationDocument } from '../utils/reservation-doc-generator'
+import { formatLocalDate } from '@/utils/date-utils'
 
 interface ReservationDetailModalProps {
   reservation: Reservation | null
@@ -33,33 +34,16 @@ const STATUS_DOT: Record<ReservationStatus, string> = {
   canceled: 'bg-red-400',
 }
 
-const MONTHS = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre',
-]
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
 function formatDate(iso: string): string {
-  if (!iso) return '—'
-  const [y, m, d] = iso.split('-').map(Number)
-  return `${d} de ${MONTHS[m - 1]} de ${y}`
+  return formatLocalDate(iso, "d 'de' MMMM 'de' yyyy")
 }
 
-function fmt24to12(t: string): string {
-  if (!t) return '—'
-  const [h, min] = t.split(':').map(Number)
-  return `${h % 12 || 12}:${String(min).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`
+function fmt24to12(isoDate: string, time: string): string {
+  if (!time) return '—'
+  return formatLocalDate(`${isoDate}T${time}`, 'hh:mm a')
 }
 
 function calcDays(start: string, end: string): number {
@@ -283,7 +267,7 @@ export function ReservationDetailModal({
                 multiDay
                   ? `${days} días`
                   : r.startTime
-                    ? `${fmt24to12(r.startTime)} – ${fmt24to12(r.endTime)}`
+                    ? `${fmt24to12(r.date, r.startTime)} – ${fmt24to12(r.date, r.endTime)}`
                     : '—'
               }
             />

@@ -9,7 +9,7 @@ const BRAND_IMAGE = '/images/LOGIN/1.jpeg'
 /**
  * SignupPage Component
  *
- * Renders the registration view for OFF SCREEN.
+ * Renders the registration view for StudioOS.
  * Includes a role toggle (Cliente / Estudio) and, for clients,
  * opens a profile form modal after successful signup.
  *
@@ -110,7 +110,7 @@ export function SignupPage() {
                       name='email'
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder='admin@offscreen.com'
+                      placeholder='admin@studioos.com'
                       required
                       type='email'
                       disabled={isLoading}

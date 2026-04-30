@@ -98,7 +98,7 @@ export function ForgotPasswordPage() {
                       name='email'
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder='admin@offscreen.com'
+                      placeholder='admin@ostudioos.com'
                       required
                       type='email'
                       disabled={isLoading}

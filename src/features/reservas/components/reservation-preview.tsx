@@ -1,4 +1,5 @@
 import type { ReservationFormValues } from '../types'
+import { formatLocalDate } from '@/utils/date-utils'
 
 interface ReservationPreviewProps {
   values: ReservationFormValues
@@ -6,31 +7,14 @@ interface ReservationPreviewProps {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const MONTHS = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre',
-]
 
 function formatDate(iso: string): string {
-  if (!iso) return '—'
-  const [y, m, d] = iso.split('-').map(Number)
-  return `${d} de ${MONTHS[m - 1]} de ${y}`
+  return formatLocalDate(iso, "d 'de' MMMM 'de' yyyy")
 }
 
-function fmt24to12(t: string): string {
-  if (!t) return '—'
-  const [h, min] = t.split(':').map(Number)
-  return `${h % 12 || 12}:${String(min).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`
+function fmt24to12(isoDate: string, time: string): string {
+  if (!time) return '—'
+  return formatLocalDate(`${isoDate}T${time}`, 'hh:mm a')
 }
 
 function calcDays(start: string, end: string): number {
@@ -92,13 +76,13 @@ export function ReservationPreview({ values }: ReservationPreviewProps) {
                 movie
               </span>
               <span className='text-sm font-extrabold tracking-[0.14em] text-slate-800 uppercase dark:text-slate-100'>
-                Off Screen
+                StudioOS
               </span>
               <span className='text-sm font-light tracking-[0.14em] text-slate-400'>
                 Studio
               </span>
             </div>
-            <p className='text-[10px] text-slate-400'>estudio@offscreen.mx</p>
+            <p className='text-[10px] text-slate-400'>estudio@studioos.mx</p>
             <p className='text-[10px] text-slate-400'>
               Guadalajara, Jalisco · MX
             </p>
@@ -157,7 +141,7 @@ export function ReservationPreview({ values }: ReservationPreviewProps) {
                 </p>
                 {values.startTime && (
                   <p className='text-[11px] text-slate-500'>
-                    {fmt24to12(values.startTime)} – {fmt24to12(values.endTime)}
+                    {fmt24to12(values.date, values.startTime)} – {fmt24to12(values.date, values.endTime)}
                     {hours > 0 && ` · ${hours.toFixed(1)} hrs`}
                   </p>
                 )}
@@ -302,7 +286,7 @@ export function ReservationPreview({ values }: ReservationPreviewProps) {
         {/* ══ FOOTER ══════════════════════════════════════════════════════ */}
         <div className='flex items-center justify-between bg-slate-50 px-8 py-3 dark:bg-slate-900/60'>
           <p className='text-[9px] text-slate-400'>
-            Off Screen Studio · Orden de Reservación
+            StudioOS · Orden de Reservación
           </p>
         </div>
       </div>

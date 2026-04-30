@@ -15,6 +15,8 @@ export interface EquipmentAvailabilityResult {
   committed: number
   /** Units available = quantity - committed (floored at 0). */
   available: number
+  /** Optional equipment photo URL from Supabase Storage. */
+  image_url?: string | null
 }
 
 /**

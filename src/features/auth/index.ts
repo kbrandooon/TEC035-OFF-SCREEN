@@ -17,7 +17,11 @@ export type { SignupRole } from './api/sign-up-with-email'
 export { resetPasswordForEmail } from './api/reset-password-for-email'
 export { verifyOtp } from './api/verify-otp'
 export { checkEmailExists } from './api/check-email-exists'
-export { signInWithGoogle } from './api/sign-in-with-google'
+export {
+  signInWithGoogle,
+  isSafeInternalOAuthRedirectPath,
+} from './api/sign-in-with-google'
+export type { SignInWithGoogleOptions } from './api/sign-in-with-google'
 export { getSession } from './api/get-session'
 export { onAuthStateChange } from './api/on-auth-state-change'
 export { updateUser } from './api/update-user'
@@ -28,6 +32,9 @@ export { LoginPage } from './components/login-page'
 export { SignupPage } from './components/signup-page'
 export { ForgotPasswordPage } from './components/forgot-password-page'
 export { ClientProfileModal } from './components/client-profile-modal'
+
+// Utils
+export { displayNameFromOAuthUser } from './utils/display-name-from-user'
 
 // Types
 export type { AuthContextType } from './context/auth-context'

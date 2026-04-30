@@ -14,6 +14,15 @@
 - `InventoryDetailModal`: backdrop-blur overlay with read view and toggle-to-edit form.
 - `InventoryCreateModal`: backdrop-blur creation form matching the update modal style.
 - Scope documentation for `equipo` and `inventario` in `/documentation/scopes/`.
+- **CRM Leads feature** (`/crm/leads`): Detailed lead view with visual equipment gallery, status management, and integration with the new Quoting Engine.
+- **Quoting Engine (Cotizador)**: Interactive module for lead-to-quote conversion. Features include:
+    - Automated hourly duration calculation with Math.ceil rounding.
+    - Inclusive IVA (Net price) financial model with reverse-tax calculation.
+    - Searchable equipment catalog integration with real-time price lookup.
+    - "Personalizar Totales" toggle for direct price adjustment at the line-item level.
+    - Persistence layer with `quotes` and `quote_items` Supabase tables.
+    - Professional PDF export via browser print-optimized CSS layout.
+    - "Confirmar Reserva" flow: Automated creation of Client, Booking, and BookingEquipment records from an accepted quote.
 
 ### 🔧 Changed
 
